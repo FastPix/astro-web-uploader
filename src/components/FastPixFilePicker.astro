@@ -1,0 +1,17 @@
+---
+import "../styles/tokens.css";
+import "../styles/file-picker.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<fpx-file-picker>
+  <button type="button" class:list={["fpx-file-picker", className]}>
+    <slot>Browse…</slot>
+  </button>
+  <input type="file" hidden />
+</fpx-file-picker>

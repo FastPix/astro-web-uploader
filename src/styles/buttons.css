@@ -1,0 +1,24 @@
+.fpx-button {
+  font: inherit;
+  color: var(--fpx-button-text);
+  background: var(--fpx-button-bg);
+  border: none;
+  border-radius: var(--fpx-button-radius);
+  padding: calc(0.5rem * var(--fpx-size)) calc(1.1rem * var(--fpx-size));
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+.fpx-button:hover:not(:disabled) { background: var(--fpx-button-bg-hover); }
+.fpx-button:disabled { cursor: not-allowed; opacity: 0.45; }
+.fpx-button:focus-visible { outline: 3px solid var(--fpx-focus-ring); outline-offset: 2px; }
+
+.fpx-abort-button {
+  background: transparent;
+  color: var(--fpx-text-muted);
+  border: 1px solid var(--fpx-border-color);
+}
+.fpx-abort-button:hover:not(:disabled) {
+  background: transparent;
+  border-color: var(--fpx-border-color-hover);
+  color: var(--fpx-text-color);
+}

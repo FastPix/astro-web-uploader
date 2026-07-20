@@ -1,0 +1,71 @@
+---
+// UNPUBLISHED in-package dev page — fast iteration while developing the package.
+import { FastPixUploader, FastPixDropZone, FastPixTrack, FastPixStatus, FastPixPauseButton, FastPixResumeButton, FastPixAbortButton, FastPixStartButton } from "../components/index";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>fp-astro-uploader — dev</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+      section { margin-bottom: 3rem; }
+      #log { font: 12px/1.5 monospace; background: #f4f4f4; padding: 0.75rem; border-radius: 6px; max-height: 200px; overflow: auto; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>fp-astro-uploader dev</h1>
+    <p>
+      Paste a signed upload URL to exercise a real upload; events for the first
+      uploader are logged below.
+    </p>
+    <input id="endpoint" type="url" placeholder="https://storage.googleapis.com/…signed…" style="width: 100%;" />
+
+    <section>
+      <h2>Zero-config</h2>
+      <FastPixUploader id="up-default" accept="video/*" autoStart={false} />
+      <div id="log"></div>
+    </section>
+
+    <section>
+      <h2>Custom (radial)</h2>
+      <FastPixUploader id="up-custom" accept="video/*" autoStart={false} size="sm">
+        <FastPixDropZone>Drop a video here</FastPixDropZone>
+        <FastPixTrack variant="radial" showLabel />
+        <FastPixStatus />
+        <div style="display: flex; gap: 0.5rem;">
+          <FastPixStartButton />
+          <FastPixPauseButton />
+          <FastPixResumeButton />
+          <FastPixAbortButton />
+        </div>
+      </FastPixUploader>
+    </section>
+
+    <script>
+      import { getUploader, DOM_EVENT_NAMES } from "@fastpix/fp-astro-uploader/client";
+
+      const endpointInput = document.querySelector<HTMLInputElement>("#endpoint")!;
+      const log = document.querySelector<HTMLElement>("#log")!;
+
+      const resolver = () => {
+        const url = endpointInput.value.trim();
+        if (!url) throw new Error("Paste a signed upload URL first");
+        return url;
+      };
+
+      const el = await getUploader("#up-default");
+      el.endpoint = resolver;
+      (await getUploader("#up-custom")).endpoint = resolver;
+
+      for (const name of Object.values(DOM_EVENT_NAMES)) {
+        el.addEventListener(name, (e) => {
+          const detail = (e as CustomEvent).detail;
+          log.textContent += `${name} ${detail ? JSON.stringify(detail, (_k, v) => (v instanceof File ? v.name : v)) : ""}\n`;
+          log.scrollTop = log.scrollHeight;
+        });
+      }
+    </script>
+  </body>
+</html>

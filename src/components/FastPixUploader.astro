@@ -1,0 +1,139 @@
+---
+import "../styles/tokens.css";
+import "../styles/host.css";
+import DropZone from "./FastPixDropZone.astro";
+import Track from "./FastPixTrack.astro";
+import Status from "./FastPixStatus.astro";
+import StartButton from "./FastPixStartButton.astro";
+import PauseButton from "./FastPixPauseButton.astro";
+import ResumeButton from "./FastPixResumeButton.astro";
+import AbortButton from "./FastPixAbortButton.astro";
+
+interface FastPixAppearance {
+  accentColor?: string;
+  background?: string;
+  surface?: string;
+  textColor?: string;
+  mutedColor?: string;
+  borderColor?: string;
+  radius?: string;
+  fontFamily?: string;
+  trackHeight?: string;
+  trackFill?: string;
+  errorColor?: string;
+  successColor?: string;
+}
+
+interface Props {
+  endpoint?: string;
+  accept?: string;
+  maxFileSize?: number;
+  chunkSize?: number;
+  retryChunkAttempt?: number;
+  delayRetry?: number;
+  autoStart?: boolean;
+  disabled?: boolean;
+  size?: "sm" | "md" | "lg";
+  appearance?: FastPixAppearance;
+  id?: string;
+  class?: string;
+}
+
+const {
+  endpoint,
+  accept,
+  maxFileSize,
+  chunkSize,
+  retryChunkAttempt,
+  delayRetry,
+  autoStart,
+  disabled = false,
+  size = "md",
+  appearance,
+  id,
+  class: className,
+} = Astro.props;
+
+const APPEARANCE_VARS: Record<keyof FastPixAppearance, string> = {
+  accentColor: "--fpx-accent-color",
+  background: "--fpx-bg",
+  surface: "--fpx-surface",
+  textColor: "--fpx-text-color",
+  mutedColor: "--fpx-text-muted",
+  borderColor: "--fpx-border-color",
+  radius: "--fpx-radius",
+  fontFamily: "--fpx-font-family",
+  trackHeight: "--fpx-track-height",
+  trackFill: "--fpx-track-fill",
+  errorColor: "--fpx-error-color",
+  successColor: "--fpx-success-color",
+};
+
+const appearanceStyle = appearance
+  ? (Object.entries(appearance) as [keyof FastPixAppearance, string][])
+      .filter(([, v]) => v != null)
+      .map(([k, v]) => `${APPEARANCE_VARS[k]}: ${v};`)
+      .join(" ")
+  : undefined;
+
+const custom = Astro.slots.has("default");
+---
+
+<fpx-uploader
+  id={id}
+  class:list={["fpx-uploader", className]}
+  endpoint={endpoint}
+  accept={accept}
+  max-file-size={maxFileSize}
+  chunk-size={chunkSize}
+  retry-chunk-attempt={retryChunkAttempt}
+  delay-retry={delayRetry}
+  auto-start={autoStart === undefined ? undefined : String(autoStart)}
+  disabled={disabled || undefined}
+  data-fpx-state="idle"
+  data-fpx-size={size}
+  data-fpx-disabled={disabled || undefined}
+  style={appearanceStyle}
+>
+  {
+    custom ? (
+      <slot />
+    ) : (
+      <div class="fpx-default">
+        <div class="fpx-default-drop-section" data-fpx-show="idle ready">
+          <DropZone overlay class="fpx-default-drop">
+            <Status class="fpx-default-hint" />
+          </DropZone>
+        </div>
+
+        <div class="fpx-controls" data-fpx-show="ready">
+          <StartButton />
+        </div>
+
+        <div class="fpx-default-progress" data-fpx-show="resolving uploading paused">
+          <Status />
+          <Track showLabel />
+          <div class="fpx-controls">
+            <PauseButton />
+            <ResumeButton />
+            <AbortButton />
+          </div>
+        </div>
+
+        <div class="fpx-default-error" data-fpx-show="error">
+          <Status />
+          <StartButton>Retry</StartButton>
+        </div>
+
+        <div class="fpx-default-success" data-fpx-show="success">
+          <Status />
+        </div>
+      </div>
+    )
+  }
+</fpx-uploader>
+
+<script>
+  import { register } from "@fastpix/fp-astro-uploader/client";
+  register();
+</script>

@@ -1,0 +1,40 @@
+/* ---------- track (linear) ---------- */
+.fpx-track { display: flex; align-items: center; gap: 0.75rem; width: 100%; }
+.fpx-track-bar {
+  flex: 1;
+  height: var(--fpx-track-height);
+  background: var(--fpx-track-bg);
+  border-radius: var(--fpx-track-radius);
+  overflow: hidden;
+}
+.fpx-track-fill {
+  height: 100%;
+  width: var(--fpx-progress); /* host writes --fpx-progress */
+  background: var(--fpx-track-fill);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+.fpx-track-label {
+  font-variant-numeric: tabular-nums;
+  color: var(--fpx-text-muted);
+  font-size: 0.85em;
+  min-width: 3ch;
+  text-align: right;
+}
+fpx-uploader[data-fpx-state="error"]   .fpx-track-fill { background: var(--fpx-error-color); }
+fpx-uploader[data-fpx-state="success"] .fpx-track-fill { background: var(--fpx-success-color); }
+
+/* ---------- track (radial) ---------- */
+.fpx-track-radial { position: relative; width: calc(72px * var(--fpx-size)); height: calc(72px * var(--fpx-size)); }
+.fpx-radial-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.fpx-radial-bg, .fpx-radial-fill { fill: none; stroke-width: 8; }
+.fpx-radial-bg { stroke: var(--fpx-track-bg); }
+.fpx-radial-fill {
+  stroke: var(--fpx-track-fill);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+.fpx-track-radial .fpx-track-label {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}

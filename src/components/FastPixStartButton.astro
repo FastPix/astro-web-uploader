@@ -1,0 +1,16 @@
+---
+import "../styles/tokens.css";
+import "../styles/buttons.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<fpx-button action="start">
+  <button type="button" class:list={["fpx-button", "fpx-start-button", className]} disabled>
+    <slot>Upload</slot>
+  </button>
+</fpx-button>

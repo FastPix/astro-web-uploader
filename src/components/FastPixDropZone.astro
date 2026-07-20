@@ -1,0 +1,22 @@
+---
+import "../styles/tokens.css";
+import "../styles/drop-zone.css";
+
+interface Props {
+  class?: string;
+  overlay?: boolean;
+  label?: string;
+}
+
+const { class: className, overlay = false, label = "Drag a file here, or press to browse" } = Astro.props;
+---
+
+<fpx-drop-zone>
+  <div class="fpx-dropzone-wrapper">
+    <button type="button" class:list={["fpx-dropzone", className]} aria-label={label}>
+      <slot />
+    </button>
+    <input type="file" hidden />
+    {overlay && <div class="fpx-dropzone-overlay" aria-hidden="true" />}
+  </div>
+</fpx-drop-zone>

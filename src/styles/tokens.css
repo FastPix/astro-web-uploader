@@ -1,0 +1,57 @@
+:root {
+  --fpx-styles-loaded: 1;
+}
+
+fpx-uploader {
+  /* ---- globals ---- */
+  --fpx-accent-color: #ff5b1a;
+  --fpx-bg: transparent;
+  --fpx-surface: #ffffff;
+  --fpx-text-color: #2f2f2f;
+  --fpx-text-muted: #8a8a8a;
+  --fpx-border-color: #333;
+  --fpx-border-color-hover: #555;
+  --fpx-radius: 8px;
+  --fpx-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fpx-error-color: #ef4444;
+  --fpx-success-color: #22c55e;
+  --fpx-focus-ring: color-mix(in srgb, var(--fpx-accent-color) 50%, transparent);
+  --fpx-gap: 1rem;
+  --fpx-padding: 2rem;
+  --fpx-size: 1;
+
+  /* ---- track ---- */
+  --fpx-track-height: 8px;
+  --fpx-track-bg: #222;
+  --fpx-track-fill: var(--fpx-accent-color);
+  --fpx-track-radius: 999px;
+  --fpx-progress: 0%;
+
+  /* ---- dropzone ---- */
+  --fpx-dropzone-border: 2px dashed var(--fpx-border-color);
+  --fpx-dropzone-border-active: var(--fpx-accent-color);
+  --fpx-dropzone-bg: var(--fpx-surface);
+  --fpx-dropzone-bg-active: color-mix(in srgb, var(--fpx-accent-color) 6%, transparent);
+  --fpx-overlay-bg: rgba(0, 0, 0, 0.6);
+
+  /* ---- buttons ---- */
+  --fpx-button-bg: var(--fpx-accent-color);
+  --fpx-button-text: #fff;
+  --fpx-button-bg-hover: color-mix(in srgb, var(--fpx-accent-color) 88%, #000);
+  --fpx-button-radius: var(--fpx-radius);
+}
+
+fpx-uploader,
+fpx-uploader *,
+fpx-uploader *::before,
+fpx-uploader *::after {
+  box-sizing: border-box;
+}
+
+fpx-file-picker,
+fpx-drop-zone,
+fpx-track,
+fpx-status,
+fpx-button {
+  display: contents;
+}

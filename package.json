@@ -1,0 +1,73 @@
+{
+  "name": "@fastpix/fp-astro-uploader",
+  "version": "0.1.0",
+  "description": "FastPix Astro Uploader is a customizable Astro-native component for chunked, resumable file uploads with drag-and-drop, progress, and pause/resume.",
+  "type": "module",
+  "license": "MIT",
+  "author": "FastPix, Inc",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/components/index.ts",
+    "./components/*": "./src/components/*.astro",
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "default": "./dist/core.js"
+    }
+  },
+  "files": [
+    "src/components",
+    "src/styles",
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "dev": "npm run build && astro dev",
+    "build": "npm run build:css && tsup",
+    "build:css": "node scripts/generate-css.mjs",
+    "test": "npm run build:css && vitest run",
+    "coverage": "npm run build:css && vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "check": "astro check",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "astro-component",
+    "withastro",
+    "astro uploader",
+    "astro file upload",
+    "chunked upload",
+    "resumable uploads",
+    "drag and drop upload",
+    "upload progress",
+    "pause resume upload",
+    "video upload",
+    "web uploads",
+    "fastpix uploads"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@fastpix/resumable-uploads": "^1.0.6"
+  },
+  "peerDependencies": {
+    "astro": "^7.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.6",
+    "@vitest/coverage-v8": "^3.2.4",
+    "astro": "^7.0.7",
+    "happy-dom": "^18.0.1",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
+  }
+}

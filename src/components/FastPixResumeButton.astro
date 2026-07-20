@@ -1,0 +1,16 @@
+---
+import "../styles/tokens.css";
+import "../styles/buttons.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<fpx-button action="resume">
+  <button type="button" class:list={["fpx-button", "fpx-resume-button", className]} disabled>
+    <slot>Resume</slot>
+  </button>
+</fpx-button>

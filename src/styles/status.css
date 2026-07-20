@@ -1,0 +1,3 @@
+.fpx-status { color: var(--fpx-text-muted); font-size: 0.9em; }
+.fpx-status[data-fpx-state="error"]   { color: var(--fpx-error-color); }
+.fpx-status[data-fpx-state="success"] { color: var(--fpx-success-color); }

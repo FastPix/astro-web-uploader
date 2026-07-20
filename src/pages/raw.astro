@@ -1,0 +1,30 @@
+---
+// Raw-element path: NO .astro uploader components on this page, so no
+// build-time CSS — register() must inject the embedded stylesheet itself.
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>raw fpx-* elements</title>
+  </head>
+  <body>
+    <h1>Raw &lt;fpx-*&gt; elements</h1>
+    <div id="mount"></div>
+
+    <script>
+      import { register } from "@fastpix/fp-astro-uploader/client";
+      register();
+
+      document.querySelector("#mount")!.innerHTML = `
+        <fpx-uploader id="up-raw" accept="video/*" auto-start="false" data-fpx-state="idle" data-fpx-size="md">
+          <fpx-file-picker>
+            <button type="button" class="fpx-file-picker">Browse…</button>
+            <input type="file" hidden />
+          </fpx-file-picker>
+          <fpx-status><span class="fpx-status" role="status" aria-live="polite" data-fpx-state="idle"></span></fpx-status>
+        </fpx-uploader>`;
+    </script>
+  </body>
+</html>
