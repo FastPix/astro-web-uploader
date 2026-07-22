@@ -1,4 +1,4 @@
-import { FpxUploaderElement } from "./host-element";
+import type { FpxUploaderElement } from "./host-element";
 import type { FpxEventDetailMap } from "./events";
 
 export { register, ensureStyles } from "./register";
@@ -35,10 +35,11 @@ export async function getUploader(
   }
   await customElements.whenDefined("fpx-uploader");
   customElements.upgrade(el);
-  if (!(el instanceof FpxUploaderElement)) {
+  
+  if (el.tagName !== "FPX-UPLOADER") {
     throw new TypeError("[fastpix] getUploader: the matched element is not an <fpx-uploader>.");
   }
-  return el;
+  return el as FpxUploaderElement;
 }
 
 type FpxHTMLEventMap = {
