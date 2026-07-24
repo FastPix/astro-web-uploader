@@ -23,7 +23,7 @@ To use this component, you need a signed upload URL.
 
 To make API requests, you'll need a valid **Access Token** and **Secret Key**. See the [Basic Authentication Guide](https://fastpix.com/docs/getting-started/activate-your-account) for details on retrieving these credentials.
 
-After you have your credentials, use the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/upload-and-import-videos/direct-upload-video-media) API to generate a signed URL. You pass that URL to the component, and it uploads the file in resumable chunks. Creating the upload URL, checking when the media is ready for playback, and rendering the player are handled in your own application.
+After you have your credentials, use the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API to generate a signed URL. You pass that URL to the component, and it uploads the file in resumable chunks. Creating the upload URL, checking when the media is ready for playback, and rendering the player are handled in your own application.
 
 ```text
 your app ──── upload URL ────▶ <FastPixUploader /> ──── fpx-success ────▶ your app
@@ -118,7 +118,7 @@ A static string works for the zero-config case above. In practice you'll create 
 </script>
 ```
 
-> **Note:** The signed URL is created through the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/upload-and-import-videos/direct-upload-video-media) API. Keep that call on your server so your credentials are never exposed to the browser.
+> **Note:** The signed URL is created through the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API. Keep that call on your server so your credentials are never exposed to the browser.
 
 ## Lifecycle Events
 
@@ -581,7 +581,7 @@ The component guards against this: when a file is selected, it verifies the byte
 
 [Basic Authentication Guide](https://fastpix.com/docs/getting-started/activate-your-account)
 
-[FastPix Documentation](https://fastpix.com/docs/video-on-demand-api/upload-and-import-videos/direct-upload-video-media)
+[FastPix Documentation](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media)
 
 ## Detailed Usage
 
@@ -599,7 +599,7 @@ Under `<ClientRouter />`, uploader instances re-bind automatically after every s
 </script>
 ```
 
-For more detailed steps and advanced usage of the underlying upload engine, refer to the official [FastPix Documentation](https://fastpix.com/docs/video-on-demand-api/upload-and-import-videos/direct-upload-video-media).
+For more detailed steps and advanced usage of the underlying upload engine, refer to the official [FastPix Documentation](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media).
 
 ## License
 
