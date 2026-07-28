@@ -35,7 +35,7 @@
     "test": "npm run build:css && vitest run",
     "coverage": "npm run build:css && vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "check": "astro check",
+    "check": "npm run build && astro check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
