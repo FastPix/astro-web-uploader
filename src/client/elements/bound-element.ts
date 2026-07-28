@@ -1,6 +1,8 @@
-import { SafeHTMLElement } from "../base";
 import type { FastPixUploaderElement } from "../host-element";
+
+import { SafeHTMLElement } from "../base";
 import { resolveHost } from "../resolve-host";
+
 
 /**
  * Base for subcomponent elements: they render nothing (the .astro layer

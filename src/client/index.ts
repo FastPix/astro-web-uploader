@@ -14,7 +14,9 @@ export type {
   UploaderState,
   UploaderStatus,
 } from "../core/index";
+
 export type { FastPixEventDetailMap } from "./events";
+
 export { DOM_EVENT_NAMES } from "./events";
 export { FastPixUploaderElement } from "./host-element";
 export { ensureStyles, register } from "./register";

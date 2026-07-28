@@ -1,4 +1,5 @@
 import type { UploaderState, UploaderStatus } from "../../core/index";
+
 import { BoundElement } from "./bound-element";
 
 function defaultLabel(state: UploaderState): string {

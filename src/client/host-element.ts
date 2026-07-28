@@ -1,4 +1,5 @@
 import type { EndpointInput, UploaderConfig, UploaderEventMap, UploaderState } from "../core/index";
+
 import { ACTIVE, UploaderController } from "../core/index";
 import { SafeHTMLElement } from "./base";
 import { DOM_EVENT_NAMES, toDomDetail } from "./events";
