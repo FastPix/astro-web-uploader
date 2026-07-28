@@ -7,7 +7,10 @@ const extensionToMimeFallback: Record<string, string> = {
 };
 
 export function matchesAccept(file: File, accept: string): boolean {
-  const tokens = accept.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+  const tokens = accept
+    .split(",")
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean);
   if (tokens.length === 0) return true;
 
   const fileName = file.name.toLowerCase();

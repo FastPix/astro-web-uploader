@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
+
 import { matchesAccept } from "../src/core/matches-accept";
 
+// synthetic in-memory Files — filenames only exist as fixtures below, not on disk
 const mp4 = new File(["x"], "clip.MP4", { type: "video/mp4" });
 const png = new File(["x"], "pic.png", { type: "image/png" });
 const mkvNoType = new File(["x"], "movie.mkv", { type: "" });

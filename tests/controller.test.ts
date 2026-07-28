@@ -1,38 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { UploaderController } from "../src/core/controller";
-import type { EngineInitOptions, UploadEngine, UploaderConfig } from "../src/core/types";
-
-class FakeEngine implements UploadEngine {
-  handlers = new Map<string, Array<(e: { detail?: any }) => void>>();
-  pauseCalls = 0;
-  resumeCalls = 0;
-  abortCalls = 0;
-  initOptions: EngineInitOptions;
-
-  constructor(opts: EngineInitOptions) {
-    this.initOptions = opts;
-  }
-
-  on(eventName: string, fn: (e: { detail?: any }) => void): void {
-    const list = this.handlers.get(eventName) ?? [];
-    list.push(fn);
-    this.handlers.set(eventName, list);
-  }
-
-  fire(eventName: string, detail?: any): void {
-    for (const fn of this.handlers.get(eventName) ?? []) fn({ detail });
-  }
-
-  pause(): void {
-    this.pauseCalls += 1;
-  }
-  resume(): void {
-    this.resumeCalls += 1;
-  }
-  abort(): void {
-    this.abortCalls += 1;
-  }
-}
+import { FakeEngine, FILE, make } from "./test-utils";
 
 function deferred<T>() {
   let resolve!: (v: T) => void;
@@ -42,21 +11,6 @@ function deferred<T>() {
     reject = rej;
   });
   return { promise, resolve, reject };
-}
-
-const FILE = new File(["hello"], "clip.mp4", { type: "video/mp4" });
-
-function make(config: UploaderConfig = {}) {
-  const engines: FakeEngine[] = [];
-  const controller = new UploaderController({
-    config: { endpoint: "https://upload.example.com", autoStart: false, ...config },
-    createEngine: (opts) => {
-      const engine = new FakeEngine(opts);
-      engines.push(engine);
-      return engine;
-    },
-  });
-  return { controller, engines, engine: () => engines[engines.length - 1]! };
 }
 
 function record(controller: UploaderController, evt: any) {
@@ -84,6 +38,7 @@ describe("selectFile", () => {
   it("rejects with reason type when accept does not match", async () => {
     const { controller } = make({ accept: "video/*" });
     const onReject = record(controller, "fileReject");
+    // synthetic in-memory File, distinct per test below — none exist on disk
     const txt = new File(["x"], "notes.txt", { type: "text/plain" });
     expect(await controller.selectFile(txt)).toBe(false);
     expect(onReject).toHaveBeenCalledWith(expect.objectContaining({ file: txt, reason: "type" }));
@@ -121,7 +76,7 @@ describe("selectFile", () => {
   it("rejects with reason unreadable when the probe fails", async () => {
     const { controller } = make();
     const onReject = record(controller, "fileReject");
-    const f = new File(["x"], "sandboxed.mp4", { type: "video/mp4" });
+    const f = new File(["x"], "sandboxed.mp4", { type: "video/mp4" });  // sandboxed.mp4 -- dummy filename used in the test to simulate a file
     Object.defineProperty(f, "slice", {
       value: () => ({ arrayBuffer: () => Promise.reject(new Error("nope")) }),
     });
@@ -135,7 +90,9 @@ describe("selectFile", () => {
     const onReject = record(c.controller, "fileReject");
     const second = new File(["y"], "second.mp4", { type: "video/mp4" });
     expect(await c.controller.selectFile(second)).toBe(false);
-    expect(onReject).toHaveBeenCalledWith(expect.objectContaining({ file: second, reason: "busy" }));
+    expect(onReject).toHaveBeenCalledWith(
+      expect.objectContaining({ file: second, reason: "busy" }),
+    );
     expect(c.controller.getFile()).toBe(FILE);
   });
 
@@ -295,7 +252,11 @@ describe("engine event mapping", () => {
     const failure = record(c.controller, "chunkAttemptFailure");
     c.engine().fire("chunkAttempt", { chunkNumber: 2, totalChunks: 10, chunkSize: 16384 });
     c.engine().fire("chunkSuccess", { chunkNumber: 2, totalChunks: 10, chunkSize: 16384 });
-    c.engine().fire("chunkAttemptFailure", { chunkNumber: 3, chunkAttempt: 1, totalChunkFailureAttempts: 5 });
+    c.engine().fire("chunkAttemptFailure", {
+      chunkNumber: 3,
+      chunkAttempt: 1,
+      totalChunkFailureAttempts: 5,
+    });
     expect(attempt).toHaveBeenCalledWith({ chunkNumber: 2, totalChunks: 10, chunkSize: 16384 });
     expect(success).toHaveBeenCalledWith({ chunkNumber: 2, totalChunks: 10, chunkSize: 16384 });
     expect(failure).toHaveBeenCalledWith({ chunkNumber: 3, attempt: 1, totalAttempts: 5 });
@@ -498,6 +459,14 @@ describe("stateChange", () => {
     c.engine().fire("progress", { progress: 50 }); // progress is not a status change
     c.engine().fire("success");
     c.controller.reset();
-    expect(seen).toEqual(["ready", "resolving", "uploading", "paused", "uploading", "success", "idle"]);
+    expect(seen).toEqual([
+      "ready",
+      "resolving",
+      "uploading",
+      "paused",
+      "uploading",
+      "success",
+      "idle",
+    ]);
   });
 });

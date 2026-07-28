@@ -1,3 +1,4 @@
+// prettier-ignore
 export type UploaderStatus =
   | "idle"
   | "ready"
@@ -7,6 +8,17 @@ export type UploaderStatus =
   | "error"
   | "success";
 
+export type EndpointResolver = (file: File) => string | Promise<string>;
+
+export type EndpointInput = string | EndpointResolver;
+
+// prettier-ignore
+export type RejectReason =
+  | "type"
+  | "size"
+  | "unreadable"
+  | "busy";
+
 export interface UploaderState {
   status: UploaderStatus;
   progress: number; // 0–100
@@ -14,9 +26,6 @@ export interface UploaderState {
   errorMessage: string | null;
   isOffline: boolean; // orthogonal flag, never a primary state
 }
-
-export type EndpointResolver = (file: File) => string | Promise<string>;
-export type EndpointInput = string | EndpointResolver;
 
 export interface UploaderConfig {
   endpoint?: EndpointInput | undefined;
@@ -27,8 +36,6 @@ export interface UploaderConfig {
   delayRetry?: number | undefined; // seconds
   autoStart?: boolean | undefined; // default true
 }
-
-export type RejectReason = "type" | "size" | "unreadable" | "busy";
 
 export interface FileRejection {
   file: File;
@@ -79,6 +86,9 @@ export interface EngineInitOptions {
 }
 
 export interface UploadEngine {
+  // any: the real engine's event detail shape varies per event name; callers
+  // narrow it themselves when wiring each named listener
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on(eventName: string, fn: (event: { detail?: any }) => void): void;
   pause(): void;
   resume(): Promise<void> | void;

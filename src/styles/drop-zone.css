@@ -1,36 +1,54 @@
-.fpx-dropzone-wrapper { position: relative; }
-.fpx-dropzone {
+.fastpix-dropzone-wrapper {
+  position: relative;
+}
+
+.fastpix-dropzone {
   /* button resets */
   appearance: none;
   width: 100%;
   font: inherit;
-  color: var(--fpx-text-color);
+  color: var(--fastpix-text-color);
   cursor: pointer;
   /* surface */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: calc(0.75rem * var(--fpx-size));
-  padding: var(--fpx-padding);
-  border: var(--fpx-dropzone-border);
-  border-radius: var(--fpx-radius);
-  background: var(--fpx-dropzone-bg);
+  gap: calc(0.75rem * var(--fastpix-size));
+  padding: var(--fastpix-padding);
+  border: var(--fastpix-dropzone-border);
+  border-radius: var(--fastpix-radius);
+  background: var(--fastpix-dropzone-bg);
   text-align: center;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
-.fpx-dropzone:disabled { cursor: not-allowed; opacity: 0.6; }
-.fpx-dropzone:focus-visible { outline: 3px solid var(--fpx-focus-ring); outline-offset: 2px; }
-.fpx-dropzone[data-fpx-dragging] {
-  border-color: var(--fpx-dropzone-border-active);
-  background: var(--fpx-dropzone-bg-active);
+
+.fastpix-dropzone:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
-.fpx-dropzone-overlay {
+
+.fastpix-dropzone:focus-visible {
+  outline: 3px solid var(--fastpix-focus-ring);
+  outline-offset: 2px;
+}
+
+.fastpix-dropzone[data-fastpix-dragging] {
+  border-color: var(--fastpix-dropzone-border-active);
+  background: var(--fastpix-dropzone-bg-active);
+}
+
+.fastpix-dropzone-overlay {
   display: none;
   position: absolute;
   inset: 0;
-  border-radius: var(--fpx-radius);
-  background: var(--fpx-overlay-bg);
+  border-radius: var(--fastpix-radius);
+  background: var(--fastpix-overlay-bg);
   pointer-events: none;
 }
-.fpx-dropzone[data-fpx-dragging] ~ .fpx-dropzone-overlay { display: block; }
+
+.fastpix-dropzone[data-fastpix-dragging] ~ .fastpix-dropzone-overlay {
+  display: block;
+}

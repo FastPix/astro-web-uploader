@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { validateConfig } from "../src/core/validate-config";
 
 const BASE = { endpoint: "https://upload.example.com" };
@@ -32,6 +33,7 @@ describe("validateConfig", () => {
     it.each([5120, 512000, 256 * 40])("accepts %d", (v) => {
       expect(validateConfig({ ...BASE, chunkSize: v })).toBeNull();
     });
+
     it.each([5119, 512001, 5121, 100, 16384.5, NaN, "16384"])("rejects %j", (v) => {
       expect(validateConfig({ ...BASE, chunkSize: v as never })).toMatch(/chunkSize/);
     });

@@ -9,9 +9,9 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<fpx-file-picker>
-  <button type="button" class:list={["fpx-file-picker", className]}>
+<fastpix-file-picker>
+  <button type="button" class:list={["fastpix-file-picker", className]}>
     <slot>Browse…</slot>
   </button>
   <input type="file" hidden />
-</fpx-file-picker>
+</fastpix-file-picker>

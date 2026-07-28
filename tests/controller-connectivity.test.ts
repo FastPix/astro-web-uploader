@@ -1,38 +1,9 @@
 // @vitest-environment happy-dom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { UploaderController } from "../src/core/controller";
-import type { EngineInitOptions, UploadEngine } from "../src/core/types";
 
-class FakeEngine implements UploadEngine {
-  pauseCalls = 0;
-  resumeCalls = 0;
-  constructor(_opts: EngineInitOptions) {}
-  on(): void {}
-  pause(): void {
-    this.pauseCalls += 1;
-  }
-  resume(): void {
-    this.resumeCalls += 1;
-  }
-  abort(): void {}
-}
+import { FILE, make } from "./test-utils";
 
 const nextTick = () => new Promise((r) => setTimeout(r, 1));
-
-const FILE = new File(["hello"], "clip.mp4", { type: "video/mp4" });
-
-function make() {
-  const engines: FakeEngine[] = [];
-  const controller = new UploaderController({
-    config: { endpoint: "https://upload.example.com", autoStart: false },
-    createEngine: (opts) => {
-      const e = new FakeEngine(opts);
-      engines.push(e);
-      return e;
-    },
-  });
-  return { controller, engines, engine: () => engines[engines.length - 1]! };
-}
 
 function setOnLine(value: boolean) {
   Object.defineProperty(window.navigator, "onLine", { get: () => value, configurable: true });

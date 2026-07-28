@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+
 import { Emitter } from "../src/core/emitter";
 
 type Map = { a: number; b: void };

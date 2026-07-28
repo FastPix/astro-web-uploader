@@ -1,24 +1,38 @@
-.fpx-button {
+.fastpix-button {
   font: inherit;
-  color: var(--fpx-button-text);
-  background: var(--fpx-button-bg);
+  color: var(--fastpix-button-text);
+  background: var(--fastpix-button-bg);
   border: none;
-  border-radius: var(--fpx-button-radius);
-  padding: calc(0.5rem * var(--fpx-size)) calc(1.1rem * var(--fpx-size));
+  border-radius: var(--fastpix-button-radius);
+  padding: calc(0.5rem * var(--fastpix-size)) calc(1.1rem * var(--fastpix-size));
   cursor: pointer;
-  transition: background 0.15s ease, opacity 0.15s ease;
+  transition:
+    background 0.15s ease,
+    opacity 0.15s ease;
 }
-.fpx-button:hover:not(:disabled) { background: var(--fpx-button-bg-hover); }
-.fpx-button:disabled { cursor: not-allowed; opacity: 0.45; }
-.fpx-button:focus-visible { outline: 3px solid var(--fpx-focus-ring); outline-offset: 2px; }
 
-.fpx-abort-button {
-  background: transparent;
-  color: var(--fpx-text-muted);
-  border: 1px solid var(--fpx-border-color);
+.fastpix-button:hover:not(:disabled) {
+  background: var(--fastpix-button-bg-hover);
 }
-.fpx-abort-button:hover:not(:disabled) {
+
+.fastpix-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.fastpix-button:focus-visible {
+  outline: 3px solid var(--fastpix-focus-ring);
+  outline-offset: 2px;
+}
+
+.fastpix-abort-button {
   background: transparent;
-  border-color: var(--fpx-border-color-hover);
-  color: var(--fpx-text-color);
+  color: var(--fastpix-text-muted);
+  border: 1px solid var(--fastpix-border-color);
+}
+
+.fastpix-abort-button:hover:not(:disabled) {
+  background: transparent;
+  border-color: var(--fastpix-border-color-hover);
+  color: var(--fastpix-text-color);
 }

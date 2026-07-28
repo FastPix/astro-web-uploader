@@ -7,41 +7,41 @@ import type {
   UploaderStatus,
 } from "../core/index";
 
-/** Controller event → DOM CustomEvent name (fpx- prefix + kebab-case). */
+/** Controller event → DOM CustomEvent name (fastpix- prefix + kebab-case). */
 export const DOM_EVENT_NAMES = {
-  fileSelect: "fpx-file-select",
-  fileReject: "fpx-file-reject",
-  uploadStart: "fpx-upload-start",
-  progress: "fpx-progress",
-  chunkAttempt: "fpx-chunk-attempt",
-  chunkSuccess: "fpx-chunk-success",
-  chunkAttemptFailure: "fpx-chunk-attempt-failure",
-  pause: "fpx-pause",
-  resume: "fpx-resume",
-  abort: "fpx-abort",
-  error: "fpx-error",
-  success: "fpx-success",
-  stateChange: "fpx-state-change",
-  offline: "fpx-offline",
-  online: "fpx-online",
+  fileSelect: "fastpix-file-select",
+  fileReject: "fastpix-file-reject",
+  uploadStart: "fastpix-upload-start",
+  progress: "fastpix-progress",
+  chunkAttempt: "fastpix-chunk-attempt",
+  chunkSuccess: "fastpix-chunk-success",
+  chunkAttemptFailure: "fastpix-chunk-attempt-failure",
+  pause: "fastpix-pause",
+  resume: "fastpix-resume",
+  abort: "fastpix-abort",
+  error: "fastpix-error",
+  success: "fastpix-success",
+  stateChange: "fastpix-state-change",
+  offline: "fastpix-offline",
+  online: "fastpix-online",
 } as const satisfies Record<keyof UploaderEventMap, string>;
 
-export interface FpxEventDetailMap {
-  "fpx-file-select": { file: File };
-  "fpx-file-reject": FileRejection;
-  "fpx-upload-start": { file: File };
-  "fpx-progress": { progress: number };
-  "fpx-chunk-attempt": ChunkInfo;
-  "fpx-chunk-success": ChunkInfo;
-  "fpx-chunk-attempt-failure": ChunkFailureInfo;
-  "fpx-pause": null;
-  "fpx-resume": null;
-  "fpx-abort": null;
-  "fpx-error": UploaderError;
-  "fpx-success": null;
-  "fpx-state-change": { state: UploaderStatus };
-  "fpx-offline": null;
-  "fpx-online": null;
+export interface FastPixEventDetailMap {
+  "fastpix-file-select": { file: File };
+  "fastpix-file-reject": FileRejection;
+  "fastpix-upload-start": { file: File };
+  "fastpix-progress": { progress: number };
+  "fastpix-chunk-attempt": ChunkInfo;
+  "fastpix-chunk-success": ChunkInfo;
+  "fastpix-chunk-attempt-failure": ChunkFailureInfo;
+  "fastpix-pause": null;
+  "fastpix-resume": null;
+  "fastpix-abort": null;
+  "fastpix-error": UploaderError;
+  "fastpix-success": null;
+  "fastpix-state-change": { state: UploaderStatus };
+  "fastpix-offline": null;
+  "fastpix-online": null;
 }
 
 export function toDomDetail<K extends keyof UploaderEventMap>(

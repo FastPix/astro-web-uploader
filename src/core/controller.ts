@@ -1,18 +1,19 @@
 import { Uploader as Engine } from "@fastpix/resumable-uploads";
-import { Emitter } from "./emitter";
-import { ACTIVE, initialState, reducer } from "./state-machine";
-import type { Action, InternalState } from "./state-machine";
+
 import { checkFileReadable } from "./check-file-readable";
+import { Emitter } from "./emitter";
 import { matchesAccept } from "./matches-accept";
-import { validateConfig } from "./validate-config";
+import type { Action, InternalState } from "./state-machine";
+import { ACTIVE, initialState, reducer } from "./state-machine";
 import type {
   EngineInitOptions,
-  UploadEngine,
   FileRejection,
+  UploadEngine,
   UploaderConfig,
   UploaderEventMap,
   UploaderState,
 } from "./types";
+import { validateConfig } from "./validate-config";
 
 export interface UploaderControllerOptions {
   config?: UploaderConfig;
@@ -67,7 +68,10 @@ export class UploaderController {
     return { ...this.#config };
   }
 
-  on<K extends keyof UploaderEventMap>(evt: K, cb: (detail: UploaderEventMap[K]) => void): () => void {
+  on<K extends keyof UploaderEventMap>(
+    evt: K,
+    cb: (detail: UploaderEventMap[K]) => void,
+  ): () => void {
     return this.#emitter.on(evt, cb);
   }
 
@@ -90,7 +94,7 @@ export class UploaderController {
         /* noop */
       }
     }
-    
+
     const engine = this.#engine;
     if (engine) {
       setTimeout(() => {
@@ -106,6 +110,7 @@ export class UploaderController {
         }
       }, 0);
     }
+
     if (changed) {
       this.#emitter.emit("online", undefined);
     }
@@ -113,9 +118,11 @@ export class UploaderController {
 
   attach(): void {
     if (this.#attached || typeof window === "undefined") return;
+
     this.#attached = true;
     window.addEventListener("offline", this.#handleOffline);
     window.addEventListener("online", this.#handleOnline);
+
     if (typeof navigator !== "undefined" && !navigator.onLine) {
       this.#dispatch({ type: "OFFLINE" });
     }
@@ -123,6 +130,7 @@ export class UploaderController {
 
   detach(): void {
     if (!this.#attached) return;
+
     this.#attached = false;
     window.removeEventListener("offline", this.#handleOffline);
     window.removeEventListener("online", this.#handleOnline);
@@ -135,7 +143,8 @@ export class UploaderController {
     }
 
     // `size <= 0` lets NaN through
-    if (!(file.size > 0)) { // NOSONAR
+    if (!(file.size > 0)) {
+      // NOSONAR
       this.#emitter.emit("fileReject", {
         file,
         reason: "size",
@@ -226,6 +235,7 @@ export class UploaderController {
       this.#emitter.emit("uploadStart", file);
     } catch (err) {
       this.#starting = false;
+
       if (this.#isStale(token)) return;
       this.#fail(err instanceof Error ? err.message : "Could not resolve upload endpoint");
     }
@@ -258,6 +268,7 @@ export class UploaderController {
   #wireEngine(engine: UploadEngine): void {
     engine.on("progress", (e) => {
       if (this.#engine !== engine) return;
+
       if (this.#state.status === "paused") {
         if (this.#pauseIntent) {
           try {
@@ -275,6 +286,7 @@ export class UploaderController {
 
     engine.on("chunkAttempt", (e) => {
       if (this.#engine !== engine) return;
+
       const d = e?.detail ?? {};
       this.#emitter.emit("chunkAttempt", {
         chunkNumber: d.chunkNumber ?? 0,
@@ -285,6 +297,7 @@ export class UploaderController {
 
     engine.on("chunkSuccess", (e) => {
       if (this.#engine !== engine) return;
+
       const d = e?.detail ?? {};
       this.#emitter.emit("chunkSuccess", {
         chunkNumber: d.chunkNumber ?? 0,
@@ -295,6 +308,7 @@ export class UploaderController {
 
     engine.on("chunkAttemptFailure", (e) => {
       if (this.#engine !== engine) return;
+
       const d = e?.detail ?? {};
       this.#emitter.emit("chunkAttemptFailure", {
         chunkNumber: d.chunkNumber ?? 0,
@@ -305,6 +319,7 @@ export class UploaderController {
 
     engine.on("success", () => {
       if (this.#engine !== engine) return;
+
       this.#clearEngine();
       this.#dispatch({ type: "SUCCESS" });
       this.#emitter.emit("success", undefined);
@@ -312,6 +327,7 @@ export class UploaderController {
 
     engine.on("error", (e) => {
       if (this.#engine !== engine) return;
+
       const message = e?.detail?.message ?? "Upload failed";
       this.#clearEngine();
       this.#fail(message);
@@ -386,8 +402,11 @@ export class UploaderController {
   #dispatch(action: Action): boolean {
     const prev = this.#state;
     const next = reducer(prev, action);
+
     if (next === prev) return false;
+
     this.#state = next;
+
     if (next.status !== prev.status) {
       this.#emitter.emit("stateChange", next.status);
     }

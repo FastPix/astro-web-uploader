@@ -1,29 +1,30 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
-import { register } from "../src/client/register";
+
 import { getUploader } from "../src/client/index";
+import { register } from "../src/client/register";
 
 // Regression test for: a consumer's bundler can end up with two separate
 // module instances of this package (e.g. the component's hoisted script
 // imports dist/client.js directly while a page script's bare-specifier
 // import resolves to a bundler's pre-optimized copy). Only one copy's class
-// ever wins customElements.define("fpx-uploader", ...), so an instanceof
+// ever wins customElements.define("fastpix-uploader", ...), so an instanceof
 // check against "the wrong" module's class reference is always false even
-// though the element genuinely is an <fpx-uploader>. getUploader must not
+// though the element genuinely is an <fastpix-uploader>. getUploader must not
 // rely on instanceof for exactly this reason.
 
-class DecoyFpxUploaderElement {}
+class DecoyFastPixUploaderElement {}
 
 describe("getUploader", () => {
-  it("resolves a real <fpx-uploader> even against a class reference from another module instance", async () => {
+  it("resolves a real <fastpix-uploader> even against a class reference from another module instance", async () => {
     register();
-    const el = document.createElement("fpx-uploader");
+    const el = document.createElement("fastpix-uploader");
     document.body.appendChild(el);
 
     // proves instanceof against a structurally-similar-but-distinct class
-    // reference (standing in for "another module's FpxUploaderElement")
+    // reference (standing in for "another module's FastPixUploaderElement")
     // would have failed, exactly as in the reported bug
-    expect(el).not.toBeInstanceOf(DecoyFpxUploaderElement);
+    expect(el).not.toBeInstanceOf(DecoyFastPixUploaderElement);
 
     const resolved = await getUploader(el);
     expect(resolved).toBe(el);
@@ -34,7 +35,7 @@ describe("getUploader", () => {
 
   it("resolves by CSS selector", async () => {
     register();
-    const el = document.createElement("fpx-uploader");
+    const el = document.createElement("fastpix-uploader");
     el.id = "up-selector-test";
     document.body.appendChild(el);
 
@@ -50,7 +51,7 @@ describe("getUploader", () => {
     div.id = "not-an-uploader";
     document.body.appendChild(div);
 
-    await expect(getUploader("#not-an-uploader")).rejects.toThrow(/not an <fpx-uploader>/);
+    await expect(getUploader("#not-an-uploader")).rejects.toThrow(/not an <fastpix-uploader>/);
 
     div.remove();
   });

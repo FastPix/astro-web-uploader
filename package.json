@@ -36,6 +36,10 @@
     "coverage": "npm run build:css && vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "check": "astro check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -65,9 +69,16 @@
     "@astrojs/check": "^0.9.6",
     "@vitest/coverage-v8": "^3.2.4",
     "astro": "^7.0.7",
+    "eslint": "^9.0.0",
+    "eslint-plugin-astro": "^1.7.0",
+    "eslint-plugin-simple-import-sort": "^14.0.0",
+    "globals": "^16.0.0",
     "happy-dom": "^18.0.1",
+    "prettier": "^3.4.0",
+    "prettier-plugin-astro": "^0.14.1",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.0.0",
     "vitest": "^3.2.4"
   }
 }

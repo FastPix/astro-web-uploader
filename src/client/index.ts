@@ -1,10 +1,5 @@
-import type { FpxUploaderElement } from "./host-element";
-import type { FpxEventDetailMap } from "./events";
-
-export { register, ensureStyles } from "./register";
-export { FpxUploaderElement } from "./host-element";
-export { DOM_EVENT_NAMES } from "./events";
-export type { FpxEventDetailMap } from "./events";
+import type { FastPixEventDetailMap } from "./events";
+import type { FastPixUploaderElement } from "./host-element";
 
 export type {
   ChunkFailureInfo,
@@ -19,6 +14,10 @@ export type {
   UploaderState,
   UploaderStatus,
 } from "../core/index";
+export type { FastPixEventDetailMap } from "./events";
+export { DOM_EVENT_NAMES } from "./events";
+export { FastPixUploaderElement } from "./host-element";
+export { ensureStyles, register } from "./register";
 
 /**
  * Resolves a page's uploader element deterministically: query + whenDefined +
@@ -28,29 +27,29 @@ export type {
 export async function getUploader(
   target: string | Element,
   root: ParentNode = document,
-): Promise<FpxUploaderElement> {
+): Promise<FastPixUploaderElement> {
   const el = typeof target === "string" ? root.querySelector(target) : target;
   if (!el) {
     throw new Error(`[fastpix] getUploader: no element matches ${JSON.stringify(target)}.`);
   }
-  await customElements.whenDefined("fpx-uploader");
+  await customElements.whenDefined("fastpix-uploader");
   customElements.upgrade(el);
-  
-  if (el.tagName !== "FPX-UPLOADER") {
-    throw new TypeError("[fastpix] getUploader: the matched element is not an <fpx-uploader>.");
+
+  if (el.tagName !== "FASTPIX-UPLOADER") {
+    throw new TypeError("[fastpix] getUploader: the matched element is not an <fastpix-uploader>.");
   }
-  return el as FpxUploaderElement;
+  return el as FastPixUploaderElement;
 }
 
-type FpxHTMLEventMap = {
-  [K in keyof FpxEventDetailMap]: CustomEvent<FpxEventDetailMap[K]>;
+type FastPixHTMLEventMap = {
+  [K in keyof FastPixEventDetailMap]: CustomEvent<FastPixEventDetailMap[K]>;
 };
 
 declare global {
   interface HTMLElementTagNameMap {
-    "fpx-uploader": FpxUploaderElement;
+    "fastpix-uploader": FastPixUploaderElement;
   }
-  interface HTMLElementEventMap extends FpxHTMLEventMap {}
-  interface DocumentEventMap extends FpxHTMLEventMap {}
-  interface WindowEventMap extends FpxHTMLEventMap {}
+  interface HTMLElementEventMap extends FastPixHTMLEventMap {}
+  interface DocumentEventMap extends FastPixHTMLEventMap {}
+  interface WindowEventMap extends FastPixHTMLEventMap {}
 }

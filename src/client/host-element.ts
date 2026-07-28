@@ -1,5 +1,5 @@
+import type { EndpointInput, UploaderConfig, UploaderEventMap, UploaderState } from "../core/index";
 import { ACTIVE, UploaderController } from "../core/index";
-import type { EndpointInput, UploaderConfig, UploaderState, UploaderEventMap } from "../core/index";
 import { SafeHTMLElement } from "./base";
 import { DOM_EVENT_NAMES, toDomDetail } from "./events";
 
@@ -10,8 +10,8 @@ function numAttr(el: HTMLElement, name: string): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-/** `<fpx-uploader>` host: one controller per element, config via attributes. */
-export class FpxUploaderElement extends SafeHTMLElement {
+/** `<fastpix-uploader>` host: one controller per element, config via attributes. */
+export class FastPixUploaderElement extends SafeHTMLElement {
   static readonly observedAttributes = [
     "endpoint",
     "accept",
@@ -158,15 +158,18 @@ export class FpxUploaderElement extends SafeHTMLElement {
 
   #reflect(): void {
     const { status, progress } = this.controller.getState();
-    this.dataset.fpxState = status;
-    this.style.setProperty("--fpx-progress", `${progress}%`);
-    this.toggleAttribute("data-fpx-disabled", this.disabled);
+    this.dataset.fastpixState = status;
+    this.style.setProperty("--fastpix-progress", `${progress}%`);
+    this.toggleAttribute("data-fastpix-disabled", this.disabled);
   }
 
   #notifyUi(): void {
     for (const cb of this.#uiSubs) {
-      try { cb(); }
-      catch { /* noop */ }
+      try {
+        cb();
+      } catch {
+        /* noop */
+      }
     }
   }
 }

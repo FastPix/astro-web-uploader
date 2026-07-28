@@ -1,11 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { ACTIVE, initialState, isAllowed, reducer } from "../src/core/state-machine";
+
 import type { Action, InternalState } from "../src/core/state-machine";
+import { ACTIVE, initialState, isAllowed, reducer } from "../src/core/state-machine";
 import type { UploaderStatus } from "../src/core/types";
 
+// synthetic in-memory File — the pure reducer only needs File identity, not real bytes
 const FILE = new File(["x"], "a.mp4", { type: "video/mp4" });
 
-const STATUSES: UploaderStatus[] = ["idle", "ready", "resolving", "uploading", "paused", "error", "success"];
+const STATUSES: UploaderStatus[] = [
+  "idle",
+  "ready",
+  "resolving",
+  "uploading",
+  "paused",
+  "error",
+  "success",
+];
 
 function at(status: UploaderStatus, extra: Partial<InternalState> = {}): InternalState {
   return { ...initialState, status, file: status === "idle" ? null : FILE, ...extra };

@@ -1,40 +1,76 @@
 /* ---------- track (linear) ---------- */
-.fpx-track { display: flex; align-items: center; gap: 0.75rem; width: 100%; }
-.fpx-track-bar {
+.fastpix-track {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.fastpix-track-bar {
   flex: 1;
-  height: var(--fpx-track-height);
-  background: var(--fpx-track-bg);
-  border-radius: var(--fpx-track-radius);
+  height: var(--fastpix-track-height);
+  background: var(--fastpix-track-bg);
+  border-radius: var(--fastpix-track-radius);
   overflow: hidden;
 }
-.fpx-track-fill {
+
+.fastpix-track-fill {
   height: 100%;
-  width: var(--fpx-progress); /* host writes --fpx-progress */
-  background: var(--fpx-track-fill);
+  width: var(--fastpix-progress); /* host writes --fastpix-progress */
+  background: var(--fastpix-track-fill);
   border-radius: inherit;
   transition: width 0.3s ease;
 }
-.fpx-track-label {
+
+.fastpix-track-label {
   font-variant-numeric: tabular-nums;
-  color: var(--fpx-text-muted);
+  color: var(--fastpix-text-muted);
   font-size: 0.85em;
   min-width: 3ch;
   text-align: right;
 }
-fpx-uploader[data-fpx-state="error"]   .fpx-track-fill { background: var(--fpx-error-color); }
-fpx-uploader[data-fpx-state="success"] .fpx-track-fill { background: var(--fpx-success-color); }
+
+fastpix-uploader[data-fastpix-state="error"] .fastpix-track-fill {
+  background: var(--fastpix-error-color);
+}
+
+fastpix-uploader[data-fastpix-state="success"] .fastpix-track-fill {
+  background: var(--fastpix-success-color);
+}
 
 /* ---------- track (radial) ---------- */
-.fpx-track-radial { position: relative; width: calc(72px * var(--fpx-size)); height: calc(72px * var(--fpx-size)); }
-.fpx-radial-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.fpx-radial-bg, .fpx-radial-fill { fill: none; stroke-width: 8; }
-.fpx-radial-bg { stroke: var(--fpx-track-bg); }
-.fpx-radial-fill {
-  stroke: var(--fpx-track-fill);
+.fastpix-track-radial {
+  position: relative;
+  width: calc(72px * var(--fastpix-size));
+  height: calc(72px * var(--fastpix-size));
+}
+
+.fastpix-radial-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.fastpix-radial-bg,
+.fastpix-radial-fill {
+  fill: none;
+  stroke-width: 8;
+}
+
+.fastpix-radial-bg {
+  stroke: var(--fastpix-track-bg);
+}
+
+.fastpix-radial-fill {
+  stroke: var(--fastpix-track-fill);
   stroke-linecap: round;
   transition: stroke-dashoffset 0.3s ease;
 }
-.fpx-track-radial .fpx-track-label {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
+
+.fastpix-track-radial .fastpix-track-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

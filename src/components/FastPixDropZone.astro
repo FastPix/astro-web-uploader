@@ -8,15 +8,19 @@ interface Props {
   label?: string;
 }
 
-const { class: className, overlay = false, label = "Drag a file here, or press to browse" } = Astro.props;
+const {
+  class: className,
+  overlay = false,
+  label = "Drag a file here, or press to browse",
+} = Astro.props;
 ---
 
-<fpx-drop-zone>
-  <div class="fpx-dropzone-wrapper">
-    <button type="button" class:list={["fpx-dropzone", className]} aria-label={label}>
+<fastpix-drop-zone>
+  <div class="fastpix-dropzone-wrapper">
+    <button type="button" class:list={["fastpix-dropzone", className]} aria-label={label}>
       <slot />
     </button>
     <input type="file" hidden />
-    {overlay && <div class="fpx-dropzone-overlay" aria-hidden="true" />}
+    {overlay && <div class="fastpix-dropzone-overlay" aria-hidden="true" />}
   </div>
-</fpx-drop-zone>
+</fastpix-drop-zone>

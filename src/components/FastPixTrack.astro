@@ -2,42 +2,48 @@
 import "../styles/tokens.css";
 import "../styles/track.css";
 
+import RadialTrack from "./svgs/RadialTrack.astro";
+
 interface Props {
   class?: string;
   variant?: "linear" | "radial";
   showLabel?: boolean;
 }
 
-const { class: className, variant = "linear", showLabel = false } = Astro.props;
+// prettier-ignore
+const {
+  class: className,
+  variant = "linear",
+  showLabel = false,
+} = Astro.props;
 
+// must match RADIAL_RADIUS in src/client/elements/track.ts
 const r = 42;
 const circumference = 2 * Math.PI * r;
+
+// prettier-ignore
+const radialClasses = [
+  "fastpix-track",
+  "fastpix-track-radial",
+  className,
+];
 ---
 
-<fpx-track variant={variant}>
+<fastpix-track variant={variant}>
   {
     variant === "radial" ? (
-      <div class:list={["fpx-track", "fpx-track-radial", className]}>
-        <svg viewBox="0 0 100 100" class="fpx-radial-svg">
-          <circle class="fpx-radial-bg" cx="50" cy="50" r={r} />
-          <circle
-            class="fpx-radial-fill"
-            cx="50"
-            cy="50"
-            r={r}
-            stroke-dasharray={circumference}
-            stroke-dashoffset={circumference}
-          />
-        </svg>
-        {showLabel && <span class="fpx-track-label">0%</span>}
+      <div class:list={radialClasses}>
+        <RadialTrack radius={r} circumference={circumference} />
+
+        {showLabel && <span class="fastpix-track-label">0%</span>}
       </div>
     ) : (
-      <div class:list={["fpx-track", className]}>
-        <div class="fpx-track-bar">
-          <div class="fpx-track-fill" />
+      <div class:list={["fastpix-track", className]}>
+        <div class="fastpix-track-bar">
+          <div class="fastpix-track-fill" />
         </div>
-        {showLabel && <span class="fpx-track-label">0%</span>}
+        {showLabel && <span class="fastpix-track-label">0%</span>}
       </div>
     )
   }
-</fpx-track>
+</fastpix-track>

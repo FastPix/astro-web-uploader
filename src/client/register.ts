@@ -1,17 +1,19 @@
+import { FastPixControlButtonElement } from "./elements/control-button";
+import { FastPixDropZoneElement } from "./elements/drop-zone";
+import { FastPixFilePickerElement } from "./elements/file-picker";
+import { FastPixStatusElement } from "./elements/status";
+import { FastPixTrackElement } from "./elements/track";
 import { css } from "./generated/css";
-import { FpxUploaderElement } from "./host-element";
-import { FpxControlButtonElement } from "./elements/control-button";
-import { FpxDropZoneElement } from "./elements/drop-zone";
-import { FpxFilePickerElement } from "./elements/file-picker";
-import { FpxStatusElement } from "./elements/status";
-import { FpxTrackElement } from "./elements/track";
+import { FastPixUploaderElement } from "./host-element";
 
 /**
  * Injects the baseline stylesheet once per document — a no-op when the
  * build-time (Astro-bundled) copy is already present.
  */
 export function ensureStyles(doc: Document = document): void {
-  const sentinel = getComputedStyle(doc.documentElement).getPropertyValue("--fpx-styles-loaded");
+  const sentinel = getComputedStyle(doc.documentElement).getPropertyValue(
+    "--fastpix-styles-loaded",
+  );
   if (sentinel.trim() === "1") return;
   if (typeof CSSStyleSheet !== "undefined" && "adoptedStyleSheets" in doc) {
     const sheet = new CSSStyleSheet();
@@ -19,7 +21,7 @@ export function ensureStyles(doc: Document = document): void {
     doc.adoptedStyleSheets = [...doc.adoptedStyleSheets, sheet];
   } else {
     const style = doc.createElement("style");
-    style.dataset.fpx = "";
+    style.dataset.fastpix = "";
     style.textContent = css;
     doc.head.appendChild(style);
   }
@@ -33,10 +35,10 @@ function define(tag: string, ctor: CustomElementConstructor): void {
 export function register(): void {
   if (typeof window === "undefined" || !("customElements" in window)) return;
   ensureStyles();
-  define("fpx-uploader", FpxUploaderElement);
-  define("fpx-file-picker", FpxFilePickerElement);
-  define("fpx-drop-zone", FpxDropZoneElement);
-  define("fpx-track", FpxTrackElement);
-  define("fpx-status", FpxStatusElement);
-  define("fpx-button", FpxControlButtonElement);
+  define("fastpix-uploader", FastPixUploaderElement);
+  define("fastpix-file-picker", FastPixFilePickerElement);
+  define("fastpix-drop-zone", FastPixDropZoneElement);
+  define("fastpix-track", FastPixTrackElement);
+  define("fastpix-status", FastPixStatusElement);
+  define("fastpix-button", FastPixControlButtonElement);
 }

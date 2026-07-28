@@ -7,10 +7,17 @@ interface Props {
 }
 
 const { class: className } = Astro.props;
+
+// prettier-ignore
+const classes = [
+  "fastpix-button",
+  "fastpix-abort-button",
+  className,
+];
 ---
 
-<fpx-button action="abort">
-  <button type="button" class:list={["fpx-button", "fpx-abort-button", className]} disabled>
+<fastpix-button action="abort">
+  <button type="button" class:list={classes} disabled>
     <slot>Cancel</slot>
   </button>
-</fpx-button>
+</fastpix-button>

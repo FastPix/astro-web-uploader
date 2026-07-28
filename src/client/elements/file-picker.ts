@@ -1,6 +1,6 @@
 import { BoundElement } from "./bound-element";
 
-export class FpxFilePickerElement extends BoundElement {
+export class FastPixFilePickerElement extends BoundElement {
   get #button(): HTMLButtonElement | null {
     return this.querySelector("button");
   }
@@ -13,6 +13,7 @@ export class FpxFilePickerElement extends BoundElement {
     this.#button?.addEventListener("click", () => {
       if (!this.blocked) this.#input?.click();
     });
+
     this.#input?.addEventListener("change", () => {
       const input = this.#input;
       const file = input?.files?.[0];
@@ -24,10 +25,12 @@ export class FpxFilePickerElement extends BoundElement {
   protected override update(): void {
     const blocked = this.blocked;
     const button = this.#button;
+
     if (button) {
       button.disabled = blocked;
-      button.toggleAttribute("data-fpx-disabled", blocked);
+      button.toggleAttribute("data-fastpix-disabled", blocked);
     }
+
     const input = this.#input;
     if (input && this.host) input.accept = this.host.controller.getConfig().accept ?? "";
   }

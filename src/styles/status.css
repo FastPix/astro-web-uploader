@@ -1,3 +1,12 @@
-.fpx-status { color: var(--fpx-text-muted); font-size: 0.9em; }
-.fpx-status[data-fpx-state="error"]   { color: var(--fpx-error-color); }
-.fpx-status[data-fpx-state="success"] { color: var(--fpx-success-color); }
+.fastpix-status {
+  color: var(--fastpix-text-muted);
+  font-size: 0.9em;
+}
+
+.fastpix-status[data-fastpix-state="error"] {
+  color: var(--fastpix-error-color);
+}
+
+.fastpix-status[data-fastpix-state="success"] {
+  color: var(--fastpix-success-color);
+}

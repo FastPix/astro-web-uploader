@@ -1,13 +1,14 @@
 ---
 import "../styles/tokens.css";
 import "../styles/host.css";
+
+import AbortButton from "./FastPixAbortButton.astro";
 import DropZone from "./FastPixDropZone.astro";
-import Track from "./FastPixTrack.astro";
-import Status from "./FastPixStatus.astro";
-import StartButton from "./FastPixStartButton.astro";
 import PauseButton from "./FastPixPauseButton.astro";
 import ResumeButton from "./FastPixResumeButton.astro";
-import AbortButton from "./FastPixAbortButton.astro";
+import StartButton from "./FastPixStartButton.astro";
+import Status from "./FastPixStatus.astro";
+import Track from "./FastPixTrack.astro";
 
 interface FastPixAppearance {
   accentColor?: string;
@@ -33,7 +34,11 @@ interface Props {
   delayRetry?: number;
   autoStart?: boolean;
   disabled?: boolean;
-  size?: "sm" | "md" | "lg";
+  // prettier-ignore
+  size?:
+    | "sm"
+    | "md"
+    | "lg";
   appearance?: FastPixAppearance;
   id?: string;
   class?: string;
@@ -55,18 +60,18 @@ const {
 } = Astro.props;
 
 const APPEARANCE_VARS: Record<keyof FastPixAppearance, string> = {
-  accentColor: "--fpx-accent-color",
-  background: "--fpx-bg",
-  surface: "--fpx-surface",
-  textColor: "--fpx-text-color",
-  mutedColor: "--fpx-text-muted",
-  borderColor: "--fpx-border-color",
-  radius: "--fpx-radius",
-  fontFamily: "--fpx-font-family",
-  trackHeight: "--fpx-track-height",
-  trackFill: "--fpx-track-fill",
-  errorColor: "--fpx-error-color",
-  successColor: "--fpx-success-color",
+  accentColor: "--fastpix-accent-color",
+  background: "--fastpix-bg",
+  surface: "--fastpix-surface",
+  textColor: "--fastpix-text-color",
+  mutedColor: "--fastpix-text-muted",
+  borderColor: "--fastpix-border-color",
+  radius: "--fastpix-radius",
+  fontFamily: "--fastpix-font-family",
+  trackHeight: "--fastpix-track-height",
+  trackFill: "--fastpix-track-fill",
+  errorColor: "--fastpix-error-color",
+  successColor: "--fastpix-success-color",
 };
 
 const appearanceStyle = appearance
@@ -79,9 +84,9 @@ const appearanceStyle = appearance
 const custom = Astro.slots.has("default");
 ---
 
-<fpx-uploader
+<fastpix-uploader
   id={id}
-  class:list={["fpx-uploader", className]}
+  class:list={["fastpix-uploader", className]}
   endpoint={endpoint}
   accept={accept}
   max-file-size={maxFileSize}
@@ -90,48 +95,48 @@ const custom = Astro.slots.has("default");
   delay-retry={delayRetry}
   auto-start={autoStart === undefined ? undefined : String(autoStart)}
   disabled={disabled || undefined}
-  data-fpx-state="idle"
-  data-fpx-size={size}
-  data-fpx-disabled={disabled || undefined}
+  data-fastpix-state="idle"
+  data-fastpix-size={size}
+  data-fastpix-disabled={disabled || undefined}
   style={appearanceStyle}
 >
   {
     custom ? (
       <slot />
     ) : (
-      <div class="fpx-default">
-        <div class="fpx-default-drop-section" data-fpx-show="idle ready">
-          <DropZone overlay class="fpx-default-drop">
-            <Status class="fpx-default-hint" />
+      <div class="fastpix-default">
+        <div class="fastpix-default-drop-section" data-fastpix-show="idle ready">
+          <DropZone overlay class="fastpix-default-drop">
+            <Status class="fastpix-default-hint" />
           </DropZone>
         </div>
 
-        <div class="fpx-controls" data-fpx-show="ready">
+        <div class="fastpix-controls" data-fastpix-show="ready">
           <StartButton />
         </div>
 
-        <div class="fpx-default-progress" data-fpx-show="resolving uploading paused">
+        <div class="fastpix-default-progress" data-fastpix-show="resolving uploading paused">
           <Status />
           <Track showLabel />
-          <div class="fpx-controls">
+          <div class="fastpix-controls">
             <PauseButton />
             <ResumeButton />
             <AbortButton />
           </div>
         </div>
 
-        <div class="fpx-default-error" data-fpx-show="error">
+        <div class="fastpix-default-error" data-fastpix-show="error">
           <Status />
           <StartButton>Retry</StartButton>
         </div>
 
-        <div class="fpx-default-success" data-fpx-show="success">
+        <div class="fastpix-default-success" data-fastpix-show="success">
           <Status />
         </div>
       </div>
     )
   }
-</fpx-uploader>
+</fastpix-uploader>
 
 <script>
   import { register } from "@fastpix/fp-astro-uploader/client";

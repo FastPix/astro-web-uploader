@@ -1,14 +1,17 @@
-import type { FpxUploaderElement } from "./host-element";
+import type { FastPixUploaderElement } from "./host-element";
 
-export async function resolveHost(el: HTMLElement): Promise<FpxUploaderElement | null> {
-  const host = el.closest("fpx-uploader");
+export async function resolveHost(el: HTMLElement): Promise<FastPixUploaderElement | null> {
+  const host = el.closest("fastpix-uploader");
   if (!host) {
-    console.warn(
-      `[fastpix] <${el.tagName.toLowerCase()}> must be rendered inside <fpx-uploader>; ignoring.`,
-    );
+    // dev-only: silent in a consumer's production build
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[fastpix] <${el.tagName.toLowerCase()}> must be rendered inside <fastpix-uploader>; ignoring.`,
+      );
+    }
     return null;
   }
-  await customElements.whenDefined("fpx-uploader");
+  await customElements.whenDefined("fastpix-uploader");
   customElements.upgrade(host);
-  return host as FpxUploaderElement;
+  return host as FastPixUploaderElement;
 }

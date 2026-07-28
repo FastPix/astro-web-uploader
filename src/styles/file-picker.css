@@ -1,13 +1,24 @@
-.fpx-file-picker {
+.fastpix-file-picker {
   font: inherit;
-  color: var(--fpx-button-text);
-  background: var(--fpx-button-bg);
+  color: var(--fastpix-button-text);
+  background: var(--fastpix-button-bg);
   border: none;
-  border-radius: var(--fpx-button-radius);
-  padding: calc(0.5rem * var(--fpx-size)) calc(1rem * var(--fpx-size));
+  border-radius: var(--fastpix-button-radius);
+  padding: calc(0.5rem * var(--fastpix-size)) calc(1rem * var(--fastpix-size));
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.fpx-file-picker:hover:not(:disabled) { background: var(--fpx-button-bg-hover); }
-.fpx-file-picker:disabled { cursor: not-allowed; opacity: 0.5; }
-.fpx-file-picker:focus-visible { outline: 3px solid var(--fpx-focus-ring); outline-offset: 2px; }
+
+.fastpix-file-picker:hover:not(:disabled) {
+  background: var(--fastpix-button-bg-hover);
+}
+
+.fastpix-file-picker:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.fastpix-file-picker:focus-visible {
+  outline: 3px solid var(--fastpix-focus-ring);
+  outline-offset: 2px;
+}

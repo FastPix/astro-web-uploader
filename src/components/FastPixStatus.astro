@@ -2,7 +2,15 @@
 import "../styles/tokens.css";
 import "../styles/status.css";
 
-type UploaderStatus = "idle" | "ready" | "resolving" | "uploading" | "paused" | "error" | "success";
+// prettier-ignore
+type UploaderStatus =
+  | "idle"
+  | "ready"
+  | "resolving"
+  | "uploading"
+  | "paused"
+  | "error"
+  | "success";
 
 interface Props {
   class?: string;
@@ -18,11 +26,11 @@ const labelAttrs = Object.fromEntries(
 const idleText = labels?.idle ?? "Select a file to upload";
 ---
 
-<fpx-status {...labelAttrs}>
+<fastpix-status {...labelAttrs}>
   <span
-    class:list={["fpx-status", className]}
-    data-fpx-state="idle"
+    class:list={["fastpix-status", className]}
+    data-fastpix-state="idle"
     role="status"
     aria-live="polite">{idleText}</span
   >
-</fpx-status>
+</fastpix-status>

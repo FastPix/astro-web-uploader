@@ -1,5 +1,5 @@
 import { SafeHTMLElement } from "../base";
-import type { FpxUploaderElement } from "../host-element";
+import type { FastPixUploaderElement } from "../host-element";
 import { resolveHost } from "../resolve-host";
 
 /**
@@ -9,7 +9,7 @@ import { resolveHost } from "../resolve-host";
  * DOM listeners.
  */
 export abstract class BoundElement extends SafeHTMLElement {
-  protected host: FpxUploaderElement | null = null;
+  protected host: FastPixUploaderElement | null = null;
   #unsubUi: (() => void) | undefined;
   #bindToken = 0;
   #domBound = false;
@@ -18,12 +18,15 @@ export abstract class BoundElement extends SafeHTMLElement {
     const token = ++this.#bindToken;
     void resolveHost(this).then((host) => {
       if (!host || token !== this.#bindToken || !this.isConnected) return;
+
       this.host = host;
       this.#unsubUi = host._subscribeUi(() => this.update());
+
       if (!this.#domBound) {
         this.#domBound = true;
         this.bind();
       }
+
       this.update();
     });
   }

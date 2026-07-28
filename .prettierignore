@@ -1,0 +1,8 @@
+dist/
+dev-dist/
+coverage/
+src/client/generated/
+.astro/
+.claude/
+package-lock.json
+azure-pipelines.yml
