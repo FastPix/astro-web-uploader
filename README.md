@@ -12,7 +12,7 @@ A FastPix Astro component for resumable uploads, built on the [FastPix resumable
 - **Server-rendered, zero-flicker** - markup is printed by Astro at build/request time; a small framework-free client runtime hydrates it with no visual mismatch.
 - **No UI framework required** - the client runtime is plain custom elements, not React/Vue/Svelte - works in any Astro project regardless of which UI framework (if any) you use elsewhere.
 - **Headless option** - drive the upload lifecycle from a `/core` controller while rendering your own UI.
-- **Typed** - ships with TypeScript definitions and a typed `fpx-*` DOM event map.
+- **Typed** - ships with TypeScript definitions and a typed `fastpix-*` DOM event map.
 - **Accessible** - status changes are announced to assistive technology, supports keyboard navigation.
 
 ## Prerequisites
@@ -26,7 +26,7 @@ To make API requests, you'll need a valid **Access Token** and **Secret Key**. S
 After you have your credentials, use the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API to generate a signed URL. You pass that URL to the component, and it uploads the file in resumable chunks. Creating the upload URL, checking when the media is ready for playback, and rendering the player are handled in your own application.
 
 ```text
-your app ──── upload URL ────▶ <FastPixUploader /> ──── fpx-success ────▶ your app
+your app ──── upload URL ────▶ <FastPixUploader /> ──── fastpix-success ────▶ your app
 ```
 
 ## Table of Contents
@@ -104,7 +104,7 @@ import { FastPixUploader } from "@fastpix/fp-astro-uploader";
 
 ### Providing the upload URL
 
-A static string works for the zero-config case above. In practice you'll create the upload URL once a file is selected - Astro's server→client boundary means a *function* prop can't cross from frontmatter, so assign it from a client `<script>` instead, via the element's `endpoint` property. It receives the selected `File` and returns the URL (it may be async). Here `getSignedUrl` is your own function that returns a FastPix upload URL for the file:
+A static string works for the zero-config case above. In practice you'll create the upload URL once a file is selected - Astro's server→client boundary means a _function_ prop can't cross from frontmatter, so assign it from a client `<script>` instead, via the element's `endpoint` property. It receives the selected `File` and returns the URL (it may be async). Here `getSignedUrl` is your own function that returns a FastPix upload URL for the file:
 
 ```astro
 <FastPixUploader id="up" />
@@ -122,7 +122,7 @@ A static string works for the zero-config case above. In practice you'll create 
 
 ## Lifecycle Events
 
-Listen for `fpx-*` DOM events to respond to the upload lifecycle. All are optional.
+Listen for `fastpix-*` DOM events to respond to the upload lifecycle. All are optional.
 
 ```astro
 <FastPixUploader id="up" accept="video/*" />
@@ -134,16 +134,18 @@ Listen for `fpx-*` DOM events to respond to the upload lifecycle. All are option
   const el = await getUploader("#up");
   el.endpoint = getSignedUrl;
 
-  el.addEventListener("fpx-progress", (e) => console.log("Progress:", e.detail.progress));
-  el.addEventListener("fpx-chunk-success", (e) =>
-    console.log(`Chunk ${e.detail.chunkNumber}${e.detail.totalChunks ? ` of ${e.detail.totalChunks}` : ""}`)
+  el.addEventListener("fastpix-progress", (e) => console.log("Progress:", e.detail.progress));
+  el.addEventListener("fastpix-chunk-success", (e) =>
+    console.log(
+      `Chunk ${e.detail.chunkNumber}${e.detail.totalChunks ? ` of ${e.detail.totalChunks}` : ""}`,
+    ),
   );
-  el.addEventListener("fpx-success", () => console.log("Upload complete"));
-  el.addEventListener("fpx-error", (e) => console.error("Upload error:", e.detail.message));
+  el.addEventListener("fastpix-success", () => console.log("Upload complete"));
+  el.addEventListener("fastpix-error", (e) => console.error("Upload error:", e.detail.message));
 </script>
 ```
 
-`fpx-success` fires when the upload finishes. Anything after that - waiting for the media to be processed, then playing it - belongs to your application.
+`fastpix-success` fires when the upload finishes. Anything after that - waiting for the media to be processed, then playing it - belongs to your application.
 
 See [Events](#events) for the full list.
 
@@ -215,22 +217,22 @@ Drive it programmatically from a script, using `getUploader` instead of a ref:
 
 ## Concepts
 
-**Upload states.** The component is always in exactly one state. Child components and styling react to it via the `data-fpx-state` attribute.
+**Upload states.** The component is always in exactly one state. Child components and styling react to it via the `data-fastpix-state` attribute.
 
-| State | Meaning |
-| ----- | ------- |
-| `idle` | No file selected yet. |
-| `ready` | A file is selected but the upload hasn't started (only when `autoStart` is `false`). |
-| `resolving` | Preparing the upload (resolving the URL from a function `endpoint`). |
-| `uploading` | Sending chunks. |
-| `paused` | Upload held; it can be resumed from where it stopped. |
-| `error` | The upload failed; it can be retried. |
-| `success` | All bytes delivered. |
+| State       | Meaning                                                                              |
+| ----------- | ------------------------------------------------------------------------------------ |
+| `idle`      | No file selected yet.                                                                |
+| `ready`     | A file is selected but the upload hasn't started (only when `autoStart` is `false`). |
+| `resolving` | Preparing the upload (resolving the URL from a function `endpoint`).                 |
+| `uploading` | Sending chunks.                                                                      |
+| `paused`    | Upload held; it can be resumed from where it stopped.                                |
+| `error`     | The upload failed; it can be retried.                                                |
+| `success`   | All bytes delivered.                                                                 |
 
 Typical flow: `idle → ready → resolving → uploading → success`, with `paused` reachable from `uploading`, and `error` recoverable into a new attempt.
 
 **Endpoint.**
-The `endpoint` prop (or attribute) is a plain URL string, known up front. For a URL resolved at upload time, assign a function `(file) => string | Promise<string>` to the element's `endpoint` *property* from a client script instead - function values cannot cross Astro's server→client prop boundary, only serializable ones can.
+The `endpoint` prop (or attribute) is a plain URL string, known up front. For a URL resolved at upload time, assign a function `(file) => string | Promise<string>` to the element's `endpoint` _property_ from a client script instead - function values cannot cross Astro's server→client prop boundary, only serializable ones can.
 
 **Controlled file.**
 If your app already has a `File` (for example, from your own picker), call `el.selectFile(file)` from a client script instead of using the built-in picker or drop zone.
@@ -239,20 +241,20 @@ If your app already has a `File` (for example, from your own picker), call `el.s
 
 The `<FastPixUploader>` component accepts the following props:
 
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| `endpoint` | `string` | Optional | The upload URL. For a URL resolved per file, assign a function to the element's `endpoint` property from a client script instead (see [Providing the upload URL](#providing-the-upload-url)). |
-| `autoStart` | `boolean` | Optional | Start uploading as soon as a valid file is available. Default is `true`. Set `false` to require an explicit start. |
-| `accept` | `string` | Optional | Allowed file types (e.g. `"video/*"`, `".mp4"`), enforced for both the picker and the drop zone. See [File access on mobile](#file-access-on-mobile). |
-| `maxFileSize` | `number` (in KB) | Optional | Reject files larger than this before uploading. |
-| `chunkSize` | `number` (in KB) | Optional | Size of each upload chunk. **Minimum:** 5120 KB (5 MB), **Maximum:** 512000 KB (500 MB), in multiples of 256 KB. |
-| `retryChunkAttempt` | `number` | Optional | Number of retry attempts per chunk on failure. |
-| `delayRetry` | `number` (in seconds) | Optional | Delay between retry attempts. |
-| `disabled` | `boolean` | Optional | Disable all interaction. Default is `false`. |
-| `size` | `"sm" \| "md" \| "lg"` | Optional | Overall size of the rendered components. Default is `"md"`. |
-| `appearance` | `FastPixAppearance` | Optional | Appearance values applied as CSS variables (see [Appearance](#appearance)). |
-| `id` | `string` | Optional | Element id - required to address the instance from a client `<script>` via `getUploader`. |
-| `class` | `string` | Optional | Class applied to the root element. |
+| Name                | Type                   | Required | Description                                                                                                                                                                                   |
+| ------------------- | ---------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `endpoint`          | `string`               | Optional | The upload URL. For a URL resolved per file, assign a function to the element's `endpoint` property from a client script instead (see [Providing the upload URL](#providing-the-upload-url)). |
+| `autoStart`         | `boolean`              | Optional | Start uploading as soon as a valid file is available. Default is `true`. Set `false` to require an explicit start.                                                                            |
+| `accept`            | `string`               | Optional | Allowed file types (e.g. `"video/*"`, `".mp4"`), enforced for both the picker and the drop zone. See [File access on mobile](#file-access-on-mobile).                                         |
+| `maxFileSize`       | `number` (in KB)       | Optional | Reject files larger than this before uploading.                                                                                                                                               |
+| `chunkSize`         | `number` (in KB)       | Optional | Size of each upload chunk. **Minimum:** 5120 KB (5 MB), **Maximum:** 512000 KB (500 MB), in multiples of 256 KB.                                                                              |
+| `retryChunkAttempt` | `number`               | Optional | Number of retry attempts per chunk on failure.                                                                                                                                                |
+| `delayRetry`        | `number` (in seconds)  | Optional | Delay between retry attempts.                                                                                                                                                                 |
+| `disabled`          | `boolean`              | Optional | Disable all interaction. Default is `false`.                                                                                                                                                  |
+| `size`              | `"sm" \| "md" \| "lg"` | Optional | Overall size of the rendered components. Default is `"md"`.                                                                                                                                   |
+| `appearance`        | `FastPixAppearance`    | Optional | Appearance values applied as CSS variables (see [Appearance](#appearance)).                                                                                                                   |
+| `id`                | `string`               | Optional | Element id - required to address the instance from a client `<script>` via `getUploader`.                                                                                                     |
+| `class`             | `string`               | Optional | Class applied to the root element.                                                                                                                                                            |
 
 ### Example usage of integrating all parameters
 
@@ -273,44 +275,44 @@ The `<FastPixUploader>` component accepts the following props:
 
 ### Events
 
-Every event is a bubbling, composed `CustomEvent` with the `fpx-` prefix; payload lives in `detail`. Listen with the standard DOM `addEventListener` - TypeScript consumers get full typing on `detail` automatically once `@fastpix/fp-astro-uploader/client` is imported anywhere in the file.
+Every event is a bubbling, composed `CustomEvent` with the `fastpix-` prefix; payload lives in `detail`. Listen with the standard DOM `addEventListener` - TypeScript consumers get full typing on `detail` automatically once `@fastpix/fp-astro-uploader/client` is imported anywhere in the file.
 
-| Name | `detail` | Fires when |
-| ---- | -------- | ---------- |
-| `fpx-file-select` | `{ file }` | A valid, readable file is picked or dropped. |
-| `fpx-file-reject` | `{ file, reason, message }` | A file fails `accept`, `maxFileSize`, or can't be read. |
-| `fpx-upload-start` | `{ file }` | The upload begins. |
-| `fpx-progress` | `{ progress }` (0–100) | Progress updates. |
-| `fpx-chunk-attempt` | `{ chunkNumber, totalChunks?, chunkSize? }` | A chunk upload is attempted. |
-| `fpx-chunk-success` | `{ chunkNumber, totalChunks?, chunkSize? }` | A chunk finishes successfully. |
-| `fpx-chunk-attempt-failure` | `{ chunkNumber, attempt, totalAttempts }` | A chunk attempt fails and will be retried. |
-| `fpx-pause` | `null` | The upload is paused. |
-| `fpx-resume` | `null` | The upload is resumed. |
-| `fpx-abort` | `null` | The upload is cancelled. |
-| `fpx-error` | `{ message }` | The upload fails. |
-| `fpx-success` | `null` | The upload completes. |
-| `fpx-state-change` | `{ state }` | The state changes. |
-| `fpx-offline` | `null` | The browser loses its network connection (fires while idle or uploading). |
-| `fpx-online` | `null` | The browser regains its network connection. |
+| Name                            | `detail`                                    | Fires when                                                                |
+| ------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------- |
+| `fastpix-file-select`           | `{ file }`                                  | A valid, readable file is picked or dropped.                              |
+| `fastpix-file-reject`           | `{ file, reason, message }`                 | A file fails `accept`, `maxFileSize`, or can't be read.                   |
+| `fastpix-upload-start`          | `{ file }`                                  | The upload begins.                                                        |
+| `fastpix-progress`              | `{ progress }` (0–100)                      | Progress updates.                                                         |
+| `fastpix-chunk-attempt`         | `{ chunkNumber, totalChunks?, chunkSize? }` | A chunk upload is attempted.                                              |
+| `fastpix-chunk-success`         | `{ chunkNumber, totalChunks?, chunkSize? }` | A chunk finishes successfully.                                            |
+| `fastpix-chunk-attempt-failure` | `{ chunkNumber, attempt, totalAttempts }`   | A chunk attempt fails and will be retried.                                |
+| `fastpix-pause`                 | `null`                                      | The upload is paused.                                                     |
+| `fastpix-resume`                | `null`                                      | The upload is resumed.                                                    |
+| `fastpix-abort`                 | `null`                                      | The upload is cancelled.                                                  |
+| `fastpix-error`                 | `{ message }`                               | The upload fails.                                                         |
+| `fastpix-success`               | `null`                                      | The upload completes.                                                     |
+| `fastpix-state-change`          | `{ state }`                                 | The state changes.                                                        |
+| `fastpix-offline`               | `null`                                      | The browser loses its network connection (fires while idle or uploading). |
+| `fastpix-online`                | `null`                                      | The browser regains its network connection.                               |
 
-`fpx-file-reject`'s `reason` is one of `"type" | "size" | "unreadable" | "busy"`, alongside a ready-to-display `message`. The `"unreadable"` reason covers files the browser hands over but won't let the page read - see [File access on mobile](#file-access-on-mobile). The `"busy"` reason fires when a file is selected while an upload is already in progress; cancel the current upload before selecting another.
+`fastpix-file-reject`'s `reason` is one of `"type" | "size" | "unreadable" | "busy"`, alongside a ready-to-display `message`. The `"unreadable"` reason covers files the browser hands over but won't let the page read - see [File access on mobile](#file-access-on-mobile). The `"busy"` reason fires when a file is selected while an upload is already in progress; cancel the current upload before selecting another.
 
-The chunk events report which chunk is in flight and how many there are. Failure events report only chunk counters. To determine the cause of a failure, use the `fpx-error` event.
+The chunk events report which chunk is in flight and how many there are. Failure events report only chunk counters. To determine the cause of a failure, use the `fastpix-error` event.
 
 ### Imperative control
 
 `getUploader(selector)` resolves the underlying element (awaiting its custom-element definition first, so it's safe to call before the page has finished hydrating). The element itself carries the imperative surface.
 
-| Method | Description |
-| ------ | ----------- |
-| `start()` | Start the upload (use with `autoStart={false}`). |
-| `pause()` | Pause the active upload. |
-| `resume()` | Resume a paused upload. |
-| `abort()` | Cancel the upload and return to idle. |
-| `reset()` | Clear the file and return to idle ("upload another"). |
-| `getState()` | Returns the current `UploaderState` (as `{ status, progress, file, errorMessage, isOffline }`). |
-| `getFile()` | Returns the current `File`, or `null`. |
-| `selectFile(file)` | Select a `File` obtained outside the built-in picker/drop zone. |
+| Method             | Description                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `start()`          | Start the upload (use with `autoStart={false}`).                                                |
+| `pause()`          | Pause the active upload.                                                                        |
+| `resume()`         | Resume a paused upload.                                                                         |
+| `abort()`          | Cancel the upload and return to idle.                                                           |
+| `reset()`          | Clear the file and return to idle ("upload another").                                           |
+| `getState()`       | Returns the current `UploaderState` (as `{ status, progress, file, errorMessage, isOffline }`). |
+| `getFile()`        | Returns the current `File`, or `null`.                                                          |
+| `selectFile(file)` | Select a `File` obtained outside the built-in picker/drop zone.                                 |
 
 ```astro
 <script>
@@ -330,8 +332,8 @@ All components accept `class` and `style`. They must be rendered inside `<FastPi
 
 A standalone button that opens the file picker. Use it on its own or alongside `FastPixDropZone`. Do not place it inside `FastPixDropZone`, because the drop zone already opens the file picker when clicked.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name           | Type   | Description                                 |
+| -------------- | ------ | ------------------------------------------- |
 | slot (default) | markup | Custom button label (default: `"Browse…"`). |
 
 ```astro
@@ -342,11 +344,11 @@ A standalone button that opens the file picker. Use it on its own or alongside `
 
 A drop area that also opens the file dialog when clicked or activated with the keyboard. Put inline, non-interactive content inside it (text or an icon) - not another button.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `overlay` | `boolean` | Show a highlight overlay while a file is dragged over. |
-| `label` | `string` | Accessible label for the zone (default: `"Drag a file here, or press to browse"`). |
-| slot (default) | markup | Inline content shown inside the zone. |
+| Name           | Type      | Description                                                                        |
+| -------------- | --------- | ---------------------------------------------------------------------------------- |
+| `overlay`      | `boolean` | Show a highlight overlay while a file is dragged over.                             |
+| `label`        | `string`  | Accessible label for the zone (default: `"Drag a file here, or press to browse"`). |
+| slot (default) | markup    | Inline content shown inside the zone.                                              |
 
 ```astro
 <FastPixDropZone overlay>
@@ -358,10 +360,10 @@ A drop area that also opens the file dialog when clicked or activated with the k
 
 The progress indicator.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `variant` | `"linear" \| "radial"` | Bar or circular indicator. Default is `"linear"`. |
-| `showLabel` | `boolean` | Show the percentage. Default is `false`. |
+| Name        | Type                   | Description                                       |
+| ----------- | ---------------------- | ------------------------------------------------- |
+| `variant`   | `"linear" \| "radial"` | Bar or circular indicator. Default is `"linear"`. |
+| `showLabel` | `boolean`              | Show the percentage. Default is `false`.          |
 
 ```astro
 <FastPixTrack variant="radial" showLabel />
@@ -371,8 +373,8 @@ The progress indicator.
 
 Text describing the current state.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name     | Type                                      | Description                                                         |
+| -------- | ----------------------------------------- | ------------------------------------------------------------------- |
 | `labels` | `Partial<Record<UploaderStatus, string>>` | Override the text shown for any state (for wording or translation). |
 
 ```astro
@@ -389,8 +391,8 @@ Text describing the current state.
 
 Starts the upload. Active when a file is ready (or to retry after an error). Pair with `autoStart={false}`.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name           | Type   | Description                         |
+| -------------- | ------ | ----------------------------------- |
 | slot (default) | markup | Custom label (default: `"Upload"`). |
 
 ```astro
@@ -401,8 +403,8 @@ Starts the upload. Active when a file is ready (or to retry after an error). Pai
 
 Pauses an active upload.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name           | Type   | Description                        |
+| -------------- | ------ | ---------------------------------- |
 | slot (default) | markup | Custom label (default: `"Pause"`). |
 
 ```astro
@@ -413,8 +415,8 @@ Pauses an active upload.
 
 Resumes a paused upload.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name           | Type   | Description                         |
+| -------------- | ------ | ----------------------------------- |
 | slot (default) | markup | Custom label (default: `"Resume"`). |
 
 ```astro
@@ -425,8 +427,8 @@ Resumes a paused upload.
 
 Cancels the upload and returns to idle.
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
+| Name           | Type   | Description                         |
+| -------------- | ------ | ----------------------------------- |
 | slot (default) | markup | Custom label (default: `"Cancel"`). |
 
 ```astro
@@ -457,68 +459,71 @@ startButton.addEventListener("click", () => controller.start());
 
 It returns / exposes:
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `getState()` | `UploaderState` | `{ status, progress, file, errorMessage, isOffline }`. |
-| `getFile()` | `File \| null` | Selected file. |
-| `getConfig()` / `setConfig(patch)` | `UploaderConfig` | Read or patch the config; validated only when `start()` runs. |
-| `selectFile` / `start` / `pause` / `resume` / `abort` / `reset` | methods | Control actions. |
-| `on(event, cb)` / `off(event, cb)` | methods | Subscribe to the same event names as the DOM layer, without the `fpx-` prefix or `CustomEvent` wrapping. |
-| `attach()` / `detach()` | methods | Start/stop tracking `window` online/offline events. |
-| `destroy()` | method | Detach, abort any active upload, and drop all listeners. |
+| Name                                                            | Type             | Description                                                                                                  |
+| --------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| `getState()`                                                    | `UploaderState`  | `{ status, progress, file, errorMessage, isOffline }`.                                                       |
+| `getFile()`                                                     | `File \| null`   | Selected file.                                                                                               |
+| `getConfig()` / `setConfig(patch)`                              | `UploaderConfig` | Read or patch the config; validated only when `start()` runs.                                                |
+| `selectFile` / `start` / `pause` / `resume` / `abort` / `reset` | methods          | Control actions.                                                                                             |
+| `on(event, cb)` / `off(event, cb)`                              | methods          | Subscribe to the same event names as the DOM layer, without the `fastpix-` prefix or `CustomEvent` wrapping. |
+| `attach()` / `detach()`                                         | methods          | Start/stop tracking `window` online/offline events.                                                          |
+| `destroy()`                                                     | method           | Detach, abort any active upload, and drop all listeners.                                                     |
 
 ## Appearance
 
 There are three ways to customize the appearance, from lightest to most involved. They can be combined.
 
-**1. CSS variables.** Set any `--fpx-*` variable on the component (or globally on `:root`). This covers most cases.
+**1. CSS variables.** Set any `--fastpix-*` variable on the component (or globally on `:root`). This covers most cases.
 
 ```css
-fpx-uploader {
-  --fpx-accent-color: #00d1ff;
-  --fpx-radius: 12px;
-  --fpx-surface: #111;
+fastpix-uploader {
+  --fastpix-accent-color: #00d1ff;
+  --fastpix-radius: 12px;
+  --fastpix-surface: #111;
 }
 ```
 
 **2. The `appearance` prop.** The same variables as a typed object, when you'd rather not write CSS.
 
 ```astro
-<FastPixUploader endpoint="https://your-fastpix-upload-url" appearance={{ accentColor: "#00d1ff", radius: "12px" }} />
+<FastPixUploader
+  endpoint="https://your-fastpix-upload-url"
+  appearance={{ accentColor: "#00d1ff", radius: "12px" }}
+/>
 ```
 
 **3. `class` / `style`.** Every component accepts these for full control.
 
 ### CSS variables
 
-| Variable | Controls | Default |
-| -------- | -------- | ------- |
-| `--fpx-accent-color` | Accent: progress fill, active borders, primary buttons | `#ff5b1a` |
-| `--fpx-bg` | Component background | `transparent` |
-| `--fpx-surface` | Inner surfaces (drop zone) | `#ffffff` |
-| `--fpx-text-color` | Primary text | `#2f2f2f` |
-| `--fpx-text-muted` | Secondary text | `#8a8a8a` |
-| `--fpx-border-color` | Borders | `#333` |
-| `--fpx-border-color-hover` | Hover border | `#555` |
-| `--fpx-radius` | Corner radius | `8px` |
-| `--fpx-font-family` | Font stack | `system-ui, sans-serif` |
-| `--fpx-error-color` | Error text / border | `#ef4444` |
-| `--fpx-success-color` | Success text / border | `#22c55e` |
-| `--fpx-gap` | Internal spacing | `1rem` |
-| `--fpx-padding` | Component padding | `2rem` |
-| `--fpx-track-height` | Progress bar thickness | `8px` |
-| `--fpx-track-bg` | Empty track | `#222` |
-| `--fpx-track-fill` | Filled track | `var(--fpx-accent-color)` |
-| `--fpx-track-radius` | Track radius | `999px` |
-| `--fpx-dropzone-border` | Drop zone border (idle) | `2px dashed var(--fpx-border-color)` |
-| `--fpx-dropzone-border-active` | Drop zone border (dragging) | `var(--fpx-accent-color)` |
-| `--fpx-dropzone-bg` | Drop zone background (idle) | `var(--fpx-surface)` |
-| `--fpx-dropzone-bg-active` | Drop zone background (dragging) | accent tint |
-| `--fpx-overlay-bg` | Drag overlay | `rgba(0,0,0,.6)` |
-| `--fpx-button-bg` | Button background | `var(--fpx-accent-color)` |
-| `--fpx-button-text` | Button label | `#fff` |
-| `--fpx-button-bg-hover` | Button hover background | darker accent |
-| `--fpx-button-radius` | Button radius | `var(--fpx-radius)` |
+| Variable                           | Controls                                               | Default                                  |
+| ---------------------------------- | ------------------------------------------------------ | ---------------------------------------- |
+| `--fastpix-accent-color`           | Accent: progress fill, active borders, primary buttons | `#ff5b1a`                                |
+| `--fastpix-bg`                     | Component background                                   | `transparent`                            |
+| `--fastpix-surface`                | Inner surfaces (drop zone)                             | `#ffffff`                                |
+| `--fastpix-text-color`             | Primary text                                           | `#2f2f2f`                                |
+| `--fastpix-text-muted`             | Secondary text                                         | `#8a8a8a`                                |
+| `--fastpix-border-color`           | Borders                                                | `#333`                                   |
+| `--fastpix-border-color-hover`     | Hover border                                           | `#555`                                   |
+| `--fastpix-radius`                 | Corner radius                                          | `8px`                                    |
+| `--fastpix-font-family`            | Font stack                                             | `system-ui, sans-serif`                  |
+| `--fastpix-error-color`            | Error text / border                                    | `#ef4444`                                |
+| `--fastpix-success-color`          | Success text / border                                  | `#22c55e`                                |
+| `--fastpix-gap`                    | Internal spacing                                       | `1rem`                                   |
+| `--fastpix-padding`                | Component padding                                      | `2rem`                                   |
+| `--fastpix-track-height`           | Progress bar thickness                                 | `8px`                                    |
+| `--fastpix-track-bg`               | Empty track                                            | `#222`                                   |
+| `--fastpix-track-fill`             | Filled track                                           | `var(--fastpix-accent-color)`            |
+| `--fastpix-track-radius`           | Track radius                                           | `999px`                                  |
+| `--fastpix-dropzone-border`        | Drop zone border (idle)                                | `2px dashed var(--fastpix-border-color)` |
+| `--fastpix-dropzone-border-active` | Drop zone border (dragging)                            | `var(--fastpix-accent-color)`            |
+| `--fastpix-dropzone-bg`            | Drop zone background (idle)                            | `var(--fastpix-surface)`                 |
+| `--fastpix-dropzone-bg-active`     | Drop zone background (dragging)                        | accent tint                              |
+| `--fastpix-overlay-bg`             | Drag overlay                                           | `rgba(0,0,0,.6)`                         |
+| `--fastpix-button-bg`              | Button background                                      | `var(--fastpix-accent-color)`            |
+| `--fastpix-button-text`            | Button label                                           | `#fff`                                   |
+| `--fastpix-button-bg-hover`        | Button hover background                                | darker accent                            |
+| `--fastpix-button-radius`          | Button radius                                          | `var(--fastpix-radius)`                  |
 
 ### `appearance` prop keys
 
@@ -529,12 +534,18 @@ fpx-uploader {
 The root carries the current state as a data attribute, so you can style any phase in plain CSS:
 
 ```css
-fpx-uploader[data-fpx-state="error"]   { /* error look */ }
-fpx-uploader[data-fpx-state="success"] { /* success look */ }
-.fpx-dropzone[data-fpx-dragging]       { /* while dragging */ }
+fastpix-uploader[data-fastpix-state="error"] {
+  /* error look */
+}
+fastpix-uploader[data-fastpix-state="success"] {
+  /* success look */
+}
+.fastpix-dropzone[data-fastpix-dragging] {
+  /* while dragging */
+}
 ```
 
-Available hooks: `data-fpx-state` (the current state), `data-fpx-dragging` (on the drop zone), `data-fpx-size` (`sm`/`md`/`lg`), and `data-fpx-disabled`.
+Available hooks: `data-fastpix-state` (the current state), `data-fastpix-dragging` (on the drop zone), `data-fastpix-size` (`sm`/`md`/`lg`), and `data-fastpix-disabled`.
 
 ### Size
 
@@ -554,7 +565,7 @@ All types are exported for use in your own code, from both the main entry and `/
 
 A browser provides a `File` object that your application cannot read. This commonly occurs on Android when using `accept="video/*"`, which opens the Photos or Gallery app. The selected file might be sandboxed, preventing the browser from reading its contents for upload.
 
-The component guards against this: when a file is selected, it verifies the bytes are readable before accepting it. If they aren't, the file is rejected through `fpx-file-reject` with `reason: "unreadable"` and a message that names the user's browser and OS and tells them to pick the video from their device's file manager instead of the Photos/Gallery picker.
+The component guards against this: when a file is selected, it verifies the bytes are readable before accepting it. If they aren't, the file is rejected through `fastpix-file-reject` with `reason: "unreadable"` and a message that names the user's browser and OS and tells them to pick the video from their device's file manager instead of the Photos/Gallery picker.
 
 > **Note:** To reduce how often this happens, you can broaden `accept` (for example `"video/*,audio/*"`) or omit it entirely, which makes Android open the system file manager rather than the media picker. Since you can't force a particular `accept`, the readability check is always on as a safety net.
 
