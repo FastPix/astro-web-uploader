@@ -1,5 +1,4 @@
 import eslintPluginAstro from "eslint-plugin-astro";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -16,15 +15,10 @@ export default tseslint.config(
         ...globals.node,
       },
     },
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
     rules: {
       // groups value imports and `import type` imports into separate,
       // consistently-ordered blocks
       "@typescript-eslint/consistent-type-imports": ["error", { prefer: "type-imports" }],
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
       // underscore-prefixed params are this codebase's "intentionally unused" convention
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       // `interface X extends Y {}` is the standard pattern for global lib.dom

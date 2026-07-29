@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import type { Action, InternalState } from "../src/core/state-machine";
-import { ACTIVE, initialState, isAllowed, reducer } from "../src/core/state-machine";
 import type { UploaderStatus } from "../src/core/types";
+
+import { ACTIVE, initialState, isAllowed, reducer } from "../src/core/state-machine";
 
 // synthetic in-memory File — the pure reducer only needs File identity, not real bytes
 const FILE = new File(["x"], "a.mp4", { type: "video/mp4" });

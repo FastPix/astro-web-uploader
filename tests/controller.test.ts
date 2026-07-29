@@ -76,7 +76,7 @@ describe("selectFile", () => {
   it("rejects with reason unreadable when the probe fails", async () => {
     const { controller } = make();
     const onReject = record(controller, "fileReject");
-    const f = new File(["x"], "sandboxed.mp4", { type: "video/mp4" });  // sandboxed.mp4 -- dummy filename used in the test to simulate a file
+    const f = new File(["x"], "sandboxed.mp4", { type: "video/mp4" }); // sandboxed.mp4 -- dummy filename used in the test to simulate a file
     Object.defineProperty(f, "slice", {
       value: () => ({ arrayBuffer: () => Promise.reject(new Error("nope")) }),
     });

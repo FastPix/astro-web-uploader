@@ -1,10 +1,6 @@
 import { Uploader as Engine } from "@fastpix/resumable-uploads";
 
-import { checkFileReadable } from "./check-file-readable";
-import { Emitter } from "./emitter";
-import { matchesAccept } from "./matches-accept";
 import type { Action, InternalState } from "./state-machine";
-import { ACTIVE, initialState, reducer } from "./state-machine";
 import type {
   EngineInitOptions,
   FileRejection,
@@ -13,6 +9,11 @@ import type {
   UploaderEventMap,
   UploaderState,
 } from "./types";
+
+import { checkFileReadable } from "./check-file-readable";
+import { Emitter } from "./emitter";
+import { matchesAccept } from "./matches-accept";
+import { ACTIVE, initialState, reducer } from "./state-machine";
 import { validateConfig } from "./validate-config";
 
 export interface UploaderControllerOptions {

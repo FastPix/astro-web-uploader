@@ -19,7 +19,7 @@ describe("checkFileReadable", () => {
   });
 
   it("rejects an unreadable file with client-specific guidance", async () => {
-    const result = await checkFileReadable(unreadableFile("sandboxed.mp4"));  // sandboxed.mp4 -- dummy filename used in the test to simulate a file that can't be read in a sandboxed iframe
+    const result = await checkFileReadable(unreadableFile("sandboxed.mp4")); // sandboxed.mp4 -- dummy filename used in the test to simulate a file that can't be read in a sandboxed iframe
     expect(result.ok).toBe(false);
     expect(result.message).toContain('"sandboxed.mp4"');
     expect(result.message).toMatch(/couldn't be read/);
