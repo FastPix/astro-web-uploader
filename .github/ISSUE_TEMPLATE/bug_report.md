@@ -46,8 +46,8 @@ Provide a minimal reproducible snippet that shows the issue. Example:
 
   const el = await getUploader("#up");
   el.endpoint = getSignedUrl;
-  el.addEventListener("fpx-success", () => console.log("Upload complete"));
-  el.addEventListener("fpx-error", (e) => console.error("Upload error:", e.detail.message));
+  el.addEventListener("fastpix-success", () => console.log("Upload complete"));
+  el.addEventListener("fastpix-error", (e) => console.error("Upload error:", e.detail.message));
 </script>
 ```
 
