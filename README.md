@@ -36,6 +36,7 @@ your app ──── upload URL ────▶ <FastPixUploader /> ───�
   - [Import](#import)
   - [Integration](#integration)
   - [Providing the upload URL](#providing-the-upload-url)
+  - [Example project](#example-project)
 - [Lifecycle Events](#lifecycle-events)
 - [Composition](#composition)
 - [Concepts](#concepts)
@@ -119,6 +120,10 @@ A static string works for the zero-config case above. In practice you'll create 
 ```
 
 > **Note:** The signed URL is created through the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API. Keep that call on your server so your credentials are never exposed to the browser.
+
+### Example project
+
+A minimal, runnable Astro example lives in [`example/`](example). Run `npm install && npm run dev` in that folder to try the uploader end to end.
 
 ## Lifecycle Events
 

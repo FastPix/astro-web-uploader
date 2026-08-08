@@ -1,0 +1,43 @@
+---
+import { FastPixUploader } from "@fastpix/fp-astro-uploader";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FastPix Astro Uploader — Example</title>
+  </head>
+  <body style="max-width: 640px; margin: 40px auto; padding: 0 16px; font-family: system-ui;">
+    <h1>FastPix Astro Uploader</h1>
+    <p>
+      Paste a FastPix signed upload URL (created server-side via the
+      <a
+        href="https://fastpix.com/docs/video-on-demand-api/upload-and-import-videos/direct-upload-video-media"
+        >Upload media from device</a
+      > API), then pick a file.
+    </p>
+
+    <input
+      id="endpoint"
+      type="url"
+      placeholder="https://your-fastpix-upload-url"
+      style="width: 100%; padding: 8px; margin-bottom: 16px; box-sizing: border-box;"
+    />
+
+    <FastPixUploader id="uploader" accept="video/*" />
+
+    <script>
+      // Function resolvers can't cross Astro's server→client boundary, so assign
+      // it client-side via the element's `endpoint` property. Throwing here (no
+      // URL yet) surfaces as the uploader's error state — no page crash.
+      import { getUploader } from "@fastpix/fp-astro-uploader/client";
+
+      (await getUploader("#uploader")).endpoint = () => {
+        const url = document.querySelector<HTMLInputElement>("#endpoint")?.value.trim();
+        if (!url) throw new Error("Enter an upload URL first.");
+        return url;
+      };
+    </script>
+  </body>
+</html>
