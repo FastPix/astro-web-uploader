@@ -1,5 +1,6 @@
-import { UploaderController } from "../src/core/controller";
 import type { EngineInitOptions, UploadEngine, UploaderConfig } from "../src/core/types";
+
+import { UploaderController } from "../src/core/controller";
 
 // Fake in-memory File — not read from disk or a URL, just enough bytes for the
 // controller's readability probe and size checks to pass.
