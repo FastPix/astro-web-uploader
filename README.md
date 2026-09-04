@@ -44,8 +44,8 @@ Do not skip the verification step. If an install, credential, or upload-URL prob
 
 To use the component, make sure you have:
 
-- An Astro project (Astro 7+; see the peer-dependency note in [Install the component](#install-the-component)).
-- Node.js and a package manager (npm, pnpm, or yarn).
+- An Astro project (Astro 7+; see the peer-dependency note in [Install the component](#install-the-component)). Don't have one yet? Create one with `npm create astro@latest`.
+- Node.js 20 or later and a package manager (npm, pnpm, or yarn).
 - A FastPix account, with an Access Token and a Secret Key.
 - A backend or serverless function that can create a signed upload URL - your credentials must never ship in browser code.
 
