@@ -1,8 +1,18 @@
-# Introduction
+# FastPix Astro Uploader - resumable, chunked file uploads for Astro (`<FastPixUploader />`)
+
+[![npm version](https://img.shields.io/npm/v/@fastpix/fp-astro-uploader)](https://www.npmjs.com/package/@fastpix/fp-astro-uploader)
+[![npm downloads](https://img.shields.io/npm/dm/@fastpix/fp-astro-uploader)](https://www.npmjs.com/package/@fastpix/fp-astro-uploader)
+[![license](https://img.shields.io/npm/l/@fastpix/fp-astro-uploader)](https://github.com/FastPix/astro-web-uploader/blob/main/LICENSE)
+[![Astro](https://img.shields.io/badge/Astro-BC52EE?logo=astro&logoColor=white)](https://astro.build)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 A FastPix Astro component for resumable uploads, built on the [FastPix resumable web uploads SDK](https://github.com/FastPix/web-uploads-sdk).
 
 `<FastPixUploader />` provides a complete upload experience, including file selection, drag-and-drop, upload progress, and pause, resume, and cancel controls. You can also compose it from individual components to customize the layout. Provide an upload URL, and the component uploads the file in resumable chunks, reports progress, and fires a `success` event when the upload completes.
+
+**Works with:** Astro 7+ · TypeScript · any UI framework (or none) · drag-and-drop · resumable chunked uploads
+
+📖 **Docs:** https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media &nbsp;·&nbsp; 📦 **npm:** https://www.npmjs.com/package/@fastpix/fp-astro-uploader &nbsp;·&nbsp; 🚀 **Dashboard:** https://dashboard.fastpix.com
 
 ## Key Features
 
@@ -15,47 +25,37 @@ A FastPix Astro component for resumable uploads, built on the [FastPix resumable
 - **Typed** - ships with TypeScript definitions and a typed `fastpix-*` DOM event map.
 - **Accessible** - status changes are announced to assistive technology, supports keyboard navigation.
 
-## Prerequisites
+## Start here
 
-### Getting Started with FastPix
+If you are adding the FastPix Astro Uploader for the first time, follow these steps in order:
 
-To use this component, you need a signed upload URL.
+1. [Install the component](#install-the-component)
+2. [Get a signed upload URL](#get-a-signed-upload-url)
+3. [Add the uploader to a page](#add-the-uploader)
+4. [Provide the upload URL](#provide-the-upload-url)
+5. [Handle the upload result](#handle-the-upload-result)
+6. [Understand the upload workflow](#understand-the-upload-workflow)
 
-To make API requests, you'll need a valid **Access Token** and **Secret Key**. See the [Basic Authentication Guide](https://fastpix.com/docs/getting-started/activate-your-account) for details on retrieving these credentials.
+Do not skip the verification step. If an install, credential, or upload-URL problem occurs, fix it before continuing.
 
-After you have your credentials, use the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API to generate a signed URL. You pass that URL to the component, and it uploads the file in resumable chunks. Creating the upload URL, checking when the media is ready for playback, and rendering the player are handled in your own application.
+---
 
-```text
-your app ──── upload URL ────▶ <FastPixUploader /> ──── fastpix-success ────▶ your app
-```
+### Before you begin
 
-## Table of Contents
+To use the component, make sure you have:
 
-- [Installation](#installation)
-- [Basic Usage](#basic-usage)
-  - [Import](#import)
-  - [Integration](#integration)
-  - [Providing the upload URL](#providing-the-upload-url)
-  - [Example project](#example-project)
-- [Lifecycle Events](#lifecycle-events)
-- [Composition](#composition)
-- [Concepts](#concepts)
-- [Parameters Accepted](#parameters-accepted)
-  - [Events](#events)
-  - [Imperative control](#imperative-control)
-- [Components](#components)
-- [Headless / `/core`](#headless-core)
-- [Appearance](#appearance)
-- [Types](#types)
-- [File access on mobile](#file-access-on-mobile)
-- [Framework and browser support](#framework-and-browser-support)
-- [Accessibility](#accessibility)
-- [Stability](#stability)
-- [References](#references)
-- [Detailed Usage](#detailed-usage)
-- [License](#license)
+- An Astro project (Astro 7+; see the peer-dependency note in [Install the component](#install-the-component)). Don't have one yet? Create one with `npm create astro@latest`.
+- Node.js 20 or later and a package manager (npm, pnpm, or yarn).
+- A FastPix account, with an Access Token and a Secret Key.
+- A backend or serverless function that can create a signed upload URL - your credentials must never ship in browser code.
 
-## Installation
+FastPix uploads use a **signed URL**: you create a short-lived upload URL on your server with the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API, then hand only that URL to the component.
+
+> **Security:** Never expose your Access Token or Secret Key in browser code. Create signed URLs on your server and return only the URL to the client.
+
+---
+
+## Install the component
 
 Install the component using your preferred package manager.:
 
@@ -81,7 +81,16 @@ yarn add @fastpix/fp-astro-uploader@latest
 
 No stylesheet import is needed - styling ships with the component automatically (see [Appearance](#appearance)).
 
-## Basic Usage
+## Get a signed upload URL
+
+To use this component, you need a signed upload URL.
+
+To make API requests, you'll need a valid **Access Token** and **Secret Key**. See the [Basic Authentication Guide](https://fastpix.com/docs/getting-started/activate-your-account) for details on retrieving these credentials.
+
+After you have your credentials, use the [Upload media from device](https://fastpix.com/docs/video-on-demand-api/input-video/direct-upload-video-media) API to generate a signed URL. You pass that URL to the component, and it uploads the file in resumable chunks. Creating the upload URL, checking when the media is ready for playback, and rendering the player are handled in your own application.
+
+
+## Add the uploader
 
 ### Import
 
@@ -103,7 +112,7 @@ import { FastPixUploader } from "@fastpix/fp-astro-uploader";
 <FastPixUploader endpoint="https://your-fastpix-upload-url" />
 ```
 
-### Providing the upload URL
+## Provide the upload URL
 
 A static string works for the zero-config case above. In practice you'll create the upload URL once a file is selected - Astro's server→client boundary means a _function_ prop can't cross from frontmatter, so assign it from a client `<script>` instead, via the element's `endpoint` property. It receives the selected `File` and returns the URL (it may be async). Here `getSignedUrl` is your own function that returns a FastPix upload URL for the file:
 
@@ -125,7 +134,7 @@ A static string works for the zero-config case above. In practice you'll create 
 
 A minimal, runnable Astro example lives in [`example/`](example). Run `npm install && npm run dev` in that folder to try the uploader end to end.
 
-## Lifecycle Events
+## Handle the upload result
 
 Listen for `fastpix-*` DOM events to respond to the upload lifecycle. All are optional.
 
@@ -153,6 +162,26 @@ Listen for `fastpix-*` DOM events to respond to the upload lifecycle. All are op
 `fastpix-success` fires when the upload finishes. Anything after that - waiting for the media to be processed, then playing it - belongs to your application.
 
 See [Events](#events) for the full list.
+
+### Verify your integration
+
+The integration works when `fastpix-progress` climbs to 100 and `fastpix-success` fires, and the uploaded media then appears in your [FastPix Dashboard](https://dashboard.fastpix.com/). Anything after success - waiting for the media to process, then playing it - belongs to your application.
+
+## Understand the upload workflow
+
+Your server creates a signed upload URL; the `<FastPixUploader />` component uploads the selected file to it in resumable chunks and fires `fastpix-success` when the upload finishes. Processing the media and playing it back happen afterward in your own app.
+
+![FastPix Astro upload workflow: your server creates a signed upload URL, the FastPixUploader component uploads the file in resumable chunks to FastPix, fires the fastpix-success event, and your app then plays the processed media.](https://static.fastpix.com/astro-upload-workflow.png)
+
+## Next steps
+
+After your first upload works, go further:
+
+- Build a custom layout from the individual components - see [Composition](#composition).
+- Understand upload states and the endpoint model - see [Concepts](#concepts).
+- Configure chunk size, retries, file limits, sizing, and appearance - see [Parameters Accepted](#parameters-accepted).
+- Drive it from scripts, or build a fully headless uploader - see [Imperative control](#imperative-control) and [Headless / `/core`](#headless--core).
+- Theme it with CSS variables or the `appearance` prop, no CSS library required - see [Appearance](#appearance).
 
 ## Composition
 
@@ -248,7 +277,7 @@ The `<FastPixUploader>` component accepts the following props:
 
 | Name                | Type                   | Required | Description                                                                                                                                                                                   |
 | ------------------- | ---------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `endpoint`          | `string`               | Optional | The upload URL. For a URL resolved per file, assign a function to the element's `endpoint` property from a client script instead (see [Providing the upload URL](#providing-the-upload-url)). |
+| `endpoint`          | `string`               | Optional | The upload URL. For a URL resolved per file, assign a function to the element's `endpoint` property from a client script instead (see [Providing the upload URL](#provide-the-upload-url)). |
 | `autoStart`         | `boolean`              | Optional | Start uploading as soon as a valid file is available. Default is `true`. Set `false` to require an explicit start.                                                                            |
 | `accept`            | `string`               | Optional | Allowed file types (e.g. `"video/*"`, `".mp4"`), enforced for both the picker and the drop zone. See [File access on mobile](#file-access-on-mobile).                                         |
 | `maxFileSize`       | `number` (in KB)       | Optional | Reject files larger than this before uploading.                                                                                                                                               |
@@ -586,6 +615,43 @@ The component guards against this: when a file is selected, it verifies the byte
 - Status text is announced to assistive technology (`role="status"`, `aria-live="polite"`), so screen-reader users hear state and progress changes.
 - All controls - including the drop zone - are real buttons: keyboard focusable, activatable with Enter or Space, and shown with visible focus rings.
 - The `disabled` state is reflected for both pointer and assistive interaction.
+
+## FAQ
+
+**Which package do I install?**
+`@fastpix/fp-astro-uploader`. See [Install the component](#install-the-component).
+
+**Do I need React, Vue, or Svelte?**
+No. The client runtime is plain custom elements, so it works in any Astro project regardless of UI framework. See [Framework and browser support](#framework-and-browser-support).
+
+**Where does the upload URL come from?**
+You create a signed upload URL on your server with the FastPix Direct Upload API and pass it to the component. See [Get a signed upload URL](#get-a-signed-upload-url).
+
+**Why can't I pass a function `endpoint` as a prop?**
+Astro can't serialize a function across the server-to-client boundary. Assign the function to the element's `endpoint` property from a client `<script>` instead. See [Provide the upload URL](#provide-the-upload-url).
+
+**Can I build my own UI?**
+Yes - compose the individual components, or go fully headless with the `/core` controller. See [Composition](#composition) and [Headless / `/core`](#headless--core).
+
+**What chunk sizes are allowed?**
+5 MB to 500 MB (5120-512000 KB), in multiples of 256 KB. See [Parameters Accepted](#parameters-accepted).
+
+**How do I know the upload finished?**
+Listen for the `fastpix-success` event. See [Handle the upload result](#handle-the-upload-result).
+
+## Which FastPix repo do I need?
+
+This component uploads from an Astro app. For other frameworks and the backend:
+
+| I want to... | Repo |
+|---|---|
+| Add resumable uploads in plain JS or any web app | [web-uploads-sdk](https://github.com/FastPix/web-uploads-sdk) |
+| Add a React uploader component | [react-web-uploader](https://github.com/FastPix/react-web-uploader) |
+| Upload from a React Native app | [react-native-uploader](https://github.com/FastPix/react-native-uploader) |
+| Generate signed upload URLs from a Node backend | [node-sdk](https://github.com/FastPix/node-sdk) |
+| Play the uploaded video on the web | [web-player-component](https://github.com/FastPix/web-player-component) |
+
+Browse everything in the [FastPix organization](https://github.com/orgs/FastPix/repositories).
 
 ## References
 
